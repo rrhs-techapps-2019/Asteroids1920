@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<drjava version="drjava-20160913-225446">
+  <project autorefresh="false" build="out/" main="out.RunnerClient.class" root="" work="">
+    <createjar file=""/>
+    <source>
+      <file active="true" name="src/RunnerServer.java" package="" timestamp="10-Nov-2019 20:45:55">
+        <select from="868" to="868"/>
+        <scroll column="0" row="0"/>
+      </file>
+      <file name="src/RunnerClient.java" package="" timestamp="10-Nov-2019 19:33:38">
+        <select from="868" to="868"/>
+        <scroll column="0" row="0"/>
+      </file>
+      <file name="src/Ship.java" package="" timestamp="10-Nov-2019 21:23:06">
+        <select from="868" to="868"/>
+        <scroll column="0" row="0"/>
+      </file>
+      <file name="src/Client.java" package="" timestamp="10-Nov-2019 20:29:16">
+        <select from="868" to="868"/>
+        <scroll column="0" row="0"/>
+      </file>
+      <file name="src/ServerWorld.java" package="" timestamp="10-Nov-2019 20:45:24">
+        <select from="868" to="868"/>
+        <scroll column="0" row="0"/>
+      </file>
+      <file name="src/NetworkActor.java" package="" timestamp="11-Nov-2019 05:55:41">
+        <select from="868" to="868"/>
+        <scroll column="0" row="0"/>
+      </file>
+      <file name="src/GameState.java" package="" timestamp="11-Nov-2019 05:58:32">
+        <select from="868" to="868"/>
+        <scroll column="0" row="0"/>
+      </file>
+      <file name="src/GameView.java" package="" timestamp="11-Nov-2019 06:03:59">
+        <select from="868" to="868"/>
+        <scroll column="0" row="0"/>
+      </file>
+      <file name="src/Server.java" package="" timestamp="11-Nov-2019 06:06:42">
+        <select from="868" to="868"/>
+        <scroll column="0" row="0"/>
+      </file>
+      <file name="src/Asteroid.java" package="" timestamp="11-Nov-2019 06:09:37">
+        <select from="868" to="868"/>
+        <scroll column="0" row="0"/>
+      </file>
+    </source>
+    <included/>
+    <excluded/>
+    <collapsed/>
+    <classpath>
+      <file absolute="false" name="lib/mayflower3.3.4.jar"/>
+    </classpath>
+    <breakpoints/>
+    <watches/>
+    <bookmarks/>
+    <preferences/>
+  </project>
+</drjava>
