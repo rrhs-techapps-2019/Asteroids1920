@@ -1,3 +1,7 @@
+package org.rrhs.asteroids.network;
+
+import org.rrhs.asteroids.GameState;
+
 public class Client extends mayflower.net.Client
 {
     private boolean connected;

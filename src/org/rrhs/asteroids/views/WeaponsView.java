@@ -1,5 +1,7 @@
-import mayflower.*;
-import java.util.*;
+package org.rrhs.asteroids.views;
+
+import org.rrhs.asteroids.network.Client;
+import org.rrhs.asteroids.GameState;
 
 public class WeaponsView extends GameView
 {

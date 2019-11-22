@@ -1,3 +1,9 @@
+package org.rrhs.asteroids;
+
+import org.rrhs.asteroids.actors.Asteroid;
+import org.rrhs.asteroids.actors.NetworkActor;
+import org.rrhs.asteroids.actors.Ship;
+
 import java.util.*;
 
 public class GameState
