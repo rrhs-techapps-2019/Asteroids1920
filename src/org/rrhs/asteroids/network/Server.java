@@ -1,3 +1,8 @@
+package org.rrhs.asteroids.network;
+
+import org.rrhs.asteroids.actors.NetworkActor;
+import org.rrhs.asteroids.actors.Asteroid;
+import org.rrhs.asteroids.actors.Ship;
 import mayflower.*;
 
 import java.util.*;

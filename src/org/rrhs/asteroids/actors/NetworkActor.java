@@ -1,3 +1,5 @@
+package org.rrhs.asteroids.actors;
+
 import mayflower.*;
 
 public class NetworkActor extends Actor
