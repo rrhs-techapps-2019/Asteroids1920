@@ -1,7 +1,7 @@
 public class ActorData
 {
-  public ActorData()
-  {
+    public ActorData()
+    {
 
-  }
+    }
 }
