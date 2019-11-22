@@ -33,7 +33,12 @@ public class GameView extends World
         setBackground(new MayflowerImage(getWidth(), getHeight(), Color.BLACK));
     }
 
-
+    public Client getClient(){
+      return client;
+    }
+    public GameState getState(){
+     return state; 
+    }
     public void act()
     {
         resync();
