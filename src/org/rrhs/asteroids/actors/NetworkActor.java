@@ -1,6 +1,6 @@
 package org.rrhs.asteroids.actors;
 
-import mayflower.Actor;
+import mayflower.*;
 
 import java.awt.geom.Point2D;
 import java.util.Arrays;
