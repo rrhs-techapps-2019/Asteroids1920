@@ -1,7 +1,7 @@
 import mayflower.*;
 import java.util.*;
 
-public class WeaponsView 
+public class WeaponsView extends GameView
 {
   //To DO:
   //Make A Small White Line That Will Delete itself after 10 seconds
@@ -10,7 +10,8 @@ public class WeaponsView
   //Reload meter (talk with Eng. group to find out how long to reload)
   //Aiming Retical (Different Color? is it different because of energy?)
   //Talk With Ast. group about how astroids will ushinteract with our bullets and how energy can change that
-  public WeaponsView(Client client, GameState state){
+  public WeaponsView(Client client, GameState state)
+  {
     super(client,state);
   }
 }
