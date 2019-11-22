@@ -4,7 +4,8 @@
 *.class
 
 # DrJava backup files
-~*.java
+*.java~
+*.drjava
 
 # BlueJ context files
 *.ctxt
