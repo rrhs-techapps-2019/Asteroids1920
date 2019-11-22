@@ -4,6 +4,7 @@
 *.class
 
 # DrJava backup files
+
 *.java~
 *.drjava
 
