@@ -1,11 +1,15 @@
+package org.rrhs.asteroids;
+
+import org.rrhs.asteroids.network.Client;
+import org.rrhs.asteroids.views.GameView;
 import mayflower.*;
 
 //This class is the starting point of your program.
 //It contains the main method which will execute when you run the project.
-public class RunnerServer extends MayflowerHeadless
+public class RunnerClient extends Mayflower
 {
     //Construct a Mayflower Window.
-    public RunnerServer()
+    public RunnerClient()
     {
         //Open a GUI Window with the specified title, width, and height
         //DO NOT WRITE ANY ADDITIONAL CODE IN THIS CONSTRUCTOR!
@@ -21,11 +25,11 @@ public class RunnerServer extends MayflowerHeadless
         //Show a black border around the Actors
         //Mayflower.showBounds(true);
 
+        GameState state = new GameState();
+        Client client = new Client(state);
 
         //Create a new instance of a BlockWorld
-        World startingWorld = new ServerWorld();
-
-        Server server = new Server(startingWorld);
+        World startingWorld = new GameView(client, state);
 
         //Load the startingWorld into the Mayflower Window
         Mayflower.setWorld(startingWorld);
@@ -39,6 +43,6 @@ public class RunnerServer extends MayflowerHeadless
         // The constructor will be called
         // Then the init() method will be called
         //DO NOT WRITE ANY ADDITIONAL CODE IN THIS METHOD!
-        new RunnerServer();
+        new RunnerClient();
     }
 }
