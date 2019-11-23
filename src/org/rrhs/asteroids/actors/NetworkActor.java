@@ -1,6 +1,6 @@
 package org.rrhs.asteroids.actors;
 
-import mayflower.*;
+import mayflower.Actor;
 
 public class NetworkActor extends Actor
 {
