@@ -24,8 +24,9 @@ public class Laser extends NetworkActor {
         MayflowerImage img = new MayflowerImage("Laser.png");
         setImage(img);
     }
-
-    public void run() {
+    
+    public void run()
+    {
         SecPassed++;
 
     }
