@@ -1,6 +1,6 @@
 package org.rrhs.asteroids.network;
 
-import mayflower.*;
+import mayflower.World;
 
 public class ServerWorld extends World
 {

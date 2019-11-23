@@ -1,7 +1,8 @@
-import mayflower.*;
+import mayflower.World;
+
 public class Lobby extends World
 {
- public Lobby()
+    public Lobby()
     {
 
     }
