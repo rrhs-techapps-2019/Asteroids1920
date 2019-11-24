@@ -23,9 +23,13 @@ public final class LogEntry
         this.lineNumber = lineNumber;
     }
 
-    // jesus, this is unreadable
-    // conforms to this format:
-    // (0000-00-00T00:00:00)[CallingClass#callingMethod:line] LEVEL: message
+
+    /**
+     * Format this log entry as a {@linkplain String}.<br>
+     * <p>
+     * Conforms to the following format:<br>
+     * {@code (0000-00-00T00:00:00)[CallingClass#callingMethod:line] LEVEL: message}
+     */
     @Override
     public String toString()
     {
@@ -35,6 +39,9 @@ public final class LogEntry
                 message;
     }
 
+    /**
+     * Should this log entry be logged at the current level?
+     */
     public boolean shouldLog()
     {
         return level.shouldLogAt(config.getLevel());

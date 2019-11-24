@@ -1,7 +1,8 @@
 package org.rrhs.asteroids.util.logging;
 
-enum LogLevel
+public enum LogLevel
 {
+    NONE(6),
     FATAL(5),
     ERROR(4),
     WARN(3),
@@ -10,15 +11,15 @@ enum LogLevel
     TRACE(0),
     ALL(-1);
 
-    private final int level;
+    private final int ordinal;
 
-    LogLevel(final int level)
+    LogLevel(final int ordinal)
     {
-        this.level = level;
+        this.ordinal = ordinal;
     }
 
     boolean shouldLogAt(LogLevel o)
     {
-        return (this.level > o.level);
+        return (this.ordinal > o.ordinal);
     }
 }

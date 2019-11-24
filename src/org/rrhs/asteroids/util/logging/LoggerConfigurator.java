@@ -10,6 +10,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.atomic.AtomicReference;
 
+/**
+ * Manages the global logging configuration.
+ */
 public final class LoggerConfigurator
 {
     private static final DateTimeFormatter DEFAULT_FORMATTER = DateTimeFormatter.ofPattern("MM-dd-yy HH:mm:ss")
@@ -19,7 +22,7 @@ public final class LoggerConfigurator
 
     static
     {
-        // Default configuration
+        // Set default configuration
         LoggerConfigurator.empty()
                 .addWriter(new ConsoleWriter())
                 .activate();
@@ -36,8 +39,13 @@ public final class LoggerConfigurator
     }
 
     /**
-     * Create a new LoggerConfigurator with the default configuration.<br>
-     * (i.e. ISO timestamp format, LogLevel.INFO)
+     * Create a new LoggerConfigurator with an "empty" configuration.<br>
+     * This consists of:
+     * <ul>
+     *     <li>Timestamp format set to {@code "MM-dd-yy HH:mm:ss"}</li>
+     *     <li>Log level set to {@link LogLevel#INFO}</li>
+     *     <li>No {@linkplain Writer Writers}</li>
+     * </ul>
      */
     public static LoggerConfigurator empty()
     {
@@ -57,7 +65,7 @@ public final class LoggerConfigurator
      *
      * @return this LoggerConfigurator
      */
-    public LoggerConfigurator level(LogLevel level)
+    public LoggerConfigurator level(final LogLevel level)
     {
         this.level = level;
         return this;
@@ -68,13 +76,29 @@ public final class LoggerConfigurator
      *
      * @param pattern Format pattern
      * @return this LoggerConfigurator
+     * @throws IllegalArgumentException if the pattern is invalid
      * @see DateTimeFormatter#ofPattern
      */
-    public LoggerConfigurator format(String pattern)
+    public LoggerConfigurator timestampFormat(final String pattern)
     {
         this.formatter = DateTimeFormatter.ofPattern(pattern)
                 .withLocale(Locale.US)
                 .withZone(ZoneId.systemDefault());
+        return this;
+    }
+
+    /**
+     * Set the {@link Writer}.<br>
+     * Note that this will remove all other existing writers.
+     * Use {@linkplain #addWriter} if you don't intend to do this.
+     *
+     * @param writer
+     * @return
+     */
+    public LoggerConfigurator writer(final Writer writer)
+    {
+        writers = new ArrayList<>();
+        writers.add(writer);
         return this;
     }
 
@@ -84,7 +108,7 @@ public final class LoggerConfigurator
      * @param writer Writer to add
      * @return this LoggerConfigurator
      */
-    public LoggerConfigurator addWriter(Writer writer)
+    public LoggerConfigurator addWriter(final Writer writer)
     {
         writers.add(writer);
         return this;
