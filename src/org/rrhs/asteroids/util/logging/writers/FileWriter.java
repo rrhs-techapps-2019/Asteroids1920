@@ -11,6 +11,9 @@ import java.nio.file.InvalidPathException;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 
+/**
+ * A Writer that outputs log entries to a file.
+ */
 public final class FileWriter extends Writer
 {
     private OutputStream out;
@@ -22,7 +25,7 @@ public final class FileWriter extends Writer
             final OutputStream unbuffered = Files.newOutputStream(Paths.get(fileName),
                     StandardOpenOption.CREATE,
                     StandardOpenOption.WRITE);
-            this.out = new BufferedOutputStream(unbuffered);
+            this.out = new BufferedOutputStream(unbuffered, DEFAULT_BUFFER_SIZE);
         }
         catch (InvalidPathException e)
         {
