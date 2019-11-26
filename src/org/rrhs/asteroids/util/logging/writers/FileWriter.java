@@ -12,20 +12,27 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 
 /**
- * A Writer that outputs log entries to a file.
+ * A {@link Writer} that outputs log entries to a file.
  */
 public final class FileWriter extends Writer
 {
     private OutputStream out;
 
-    public FileWriter(String fileName)
+    /**
+     * Create a new FileWriter that outputs to a new file with the specified filename.
+     *
+     * @param fileName Name of the file to output to
+     * @param buffered Whether or not the stream should be buffered internally
+     */
+    public FileWriter(String fileName, boolean buffered)
     {
         try
         {
             final OutputStream unbuffered = Files.newOutputStream(Paths.get(fileName),
                     StandardOpenOption.CREATE,
                     StandardOpenOption.WRITE);
-            this.out = new BufferedOutputStream(unbuffered, DEFAULT_BUFFER_SIZE);
+            if (buffered) this.out = new BufferedOutputStream(unbuffered, DEFAULT_BUFFER_SIZE);
+            else this.out = unbuffered;
         }
         catch (InvalidPathException e)
         {
@@ -37,6 +44,17 @@ public final class FileWriter extends Writer
         }
 
         super.hookShutdownErrorHandling(this::close);
+    }
+
+    /**
+     * Create a new FileWriter that outputs to a new file with the specified filename.<br>
+     * Unbuffered by default.
+     *
+     * @param fileName Name of the file to output to
+     */
+    public FileWriter(String fileName)
+    {
+        this(fileName, false);
     }
 
     @Override
