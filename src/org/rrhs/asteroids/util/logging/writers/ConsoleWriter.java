@@ -9,8 +9,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 /**
- * A Writer that outputs log entries to an output stream.<br>
- * The stream is always buffered internally.
+ * A {@link Writer} that outputs log entries to an output stream.
  */
 public final class ConsoleWriter extends Writer
 {
@@ -20,20 +19,44 @@ public final class ConsoleWriter extends Writer
     /**
      * Create a new ConsoleWriter using the specified output stream.
      *
-     * @implNote The stream will be buffered internally. Don't buffer it yourself.
+     * @param out      Output stream to use
+     * @param buffered Whether or not the stream should be buffered internally
      */
-    public ConsoleWriter(final OutputStream out)
+    public ConsoleWriter(final OutputStream out, boolean buffered)
     {
-        this.out = new BufferedOutputStream(out, DEFAULT_BUFFER_SIZE);
+        if (buffered) this.out = new BufferedOutputStream(out, DEFAULT_BUFFER_SIZE);
+        else this.out = out;
         super.hookShutdownErrorHandling(this::close);
     }
 
     /**
-     * Create a new ConsoleWriter using {@link System#out}.
+     * Create a new ConsoleWriter using the specified output stream.<br>
+     * Unbuffered by default.
+     *
+     * @param out Output stream to use
+     */
+    public ConsoleWriter(final OutputStream out)
+    {
+        this(out, false);
+    }
+
+    /**
+     * Create a new ConsoleWriter using {@link System#out}.<br>
+     *
+     * @param buffered Whether or not the stream should be buffered internally
+     */
+    public ConsoleWriter(boolean buffered)
+    {
+        this(System.out, buffered);
+    }
+
+    /**
+     * Create a new ConsoleWriter using {@link System#out}.<br>
+     * Unbuffered by default.
      */
     public ConsoleWriter()
     {
-        this(System.out);
+        this(System.out, false);
     }
 
     @Override

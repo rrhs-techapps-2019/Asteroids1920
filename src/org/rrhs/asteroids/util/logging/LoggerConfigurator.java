@@ -92,8 +92,8 @@ public final class LoggerConfigurator
      * Note that this will remove all other existing writers.
      * Use {@linkplain #addWriter} if you don't intend to do this.
      *
-     * @param writer
-     * @return
+     * @param writer Writer to use
+     * @return this LoggerConfigurator
      */
     public LoggerConfigurator writer(final Writer writer)
     {
