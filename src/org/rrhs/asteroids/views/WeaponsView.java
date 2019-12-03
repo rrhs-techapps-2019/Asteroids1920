@@ -10,17 +10,24 @@ public class WeaponsView extends GameView
     // [ ] detect direction of turret
     // [ ] Reload meter (talk with Eng. group to find out how long to reload)
     // [ ] Aiming Retical (Different Color? is it different because of energy?)
-    // [ ] Talk With Ast. group about how astroids will ushinteract with our bullets and how energy can change that
-
+    // [ ] Asteroids will break into 3 pieces when shot 1 time and the smaller asteroids will be destroyed after 1 shot as well.
+	
+	int direction;
+	int energy;
+	int reloadTime;
+	
     public WeaponsView(Client client, GameState state)
     {
         super(client, state);
+		direction = 0;
+		energy = 0;
+		reloadTime = 0;
     }
 
     // Makes turret fire laser
     public void fireLaser()
     {
-        Laser pew = new Laser();
+		
     }
 
     // Gets status of reload meter
@@ -32,17 +39,19 @@ public class WeaponsView extends GameView
     // Clears the reload meter
     public void clearReload()
     {
+		
     }
 
     // Charges the reload meter based on weapon system's energy (parameter might change)
     public void reload(int energy)
     {
+		
     }
 
-    // Gets the rotation of the turrent (To figure out where turret is relative to the ship?)
-    public int getRotation()
+    // Gets the rotation of the turret (0-359 will be the direction ship is facing)
+    public int getDirection()
     {
-        return -1;
+        return 0;
     }
 
     @Override
