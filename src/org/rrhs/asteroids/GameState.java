@@ -4,7 +4,12 @@ import org.rrhs.asteroids.actors.Asteroid;
 import org.rrhs.asteroids.actors.NetworkActor;
 import org.rrhs.asteroids.actors.Ship;
 
-import java.util.*;
+
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Map;
+import java.util.Queue;
+
 
 public class GameState
 {

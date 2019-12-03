@@ -1,6 +1,8 @@
 package org.rrhs.asteroids.actors;
 
-import mayflower.*;
+
+import mayflower.MayflowerImage;
+
 
 public class Ship extends NetworkActor
 {

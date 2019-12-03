@@ -20,6 +20,9 @@
 *.tar.gz
 *.rar
 
+# Explicitly include libraries
+!lib/*.jar
+
 ### IntelliJ
 out/
 .idea/

@@ -1,13 +1,16 @@
 package org.rrhs.asteroids.views;
 
-import org.rrhs.asteroids.network.Client;
-import org.rrhs.asteroids.GameState;
-import org.rrhs.asteroids.actors.NetworkActor;
-import org.rrhs.asteroids.actors.Asteroid;
-import org.rrhs.asteroids.actors.Ship;
-import mayflower.*;
 
-import java.util.*;
+import mayflower.*;
+import org.rrhs.asteroids.GameState;
+import org.rrhs.asteroids.actors.Asteroid;
+import org.rrhs.asteroids.actors.NetworkActor;
+import org.rrhs.asteroids.actors.Ship;
+import org.rrhs.asteroids.network.Client;
+
+import java.util.HashMap;
+import java.util.Map;
+
 
 public class GameView extends World
 {
