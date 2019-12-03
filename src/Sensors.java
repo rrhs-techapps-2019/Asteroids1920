@@ -2,25 +2,30 @@ import mayflower.*;
 import java.util.*;
 
 public class Sensors extends GameView
-{
-  //800 by 600 screen per person
-  public Sensors(Client client, GameState state){
-    super(client,state);
-  }
-  
-  //gets ship coordinates, later will compare to other things
-  public void compareCords(){
-    NetworkActor[] actors =getState().getActors();
-    NetworkActor ship = null;
-    for (NetworkActor a:actors){
-      if(a.getType().equals("ship")){
-        ship = a;
-        break;
-      }
+{ 
+    private ArrayList<NetworkActor> asteroids;
+    //800 by 600 screen per person
+    public Sensors(Client client, GameState state){
+        super(client,state);
+        asteroids = getAsteroids(); 
     }
-    if(ship!=null){
-      int shipx = ship.getX();
-      int shipy = ship.getY();
+
+    public ArrayList<NetworkActor> getAsteroids(){ 
+        ArrayList<NetworkActor> ret = new ArrayList<NetworkActor>();
+        NetworkActor[] actors = super.getState().getActors();
+        for(int i = actors.length -1; i>=0;i--){
+            NetworkActor n=actors[i];
+            if((n.getType().equals("asteroid"))){
+                ret.add(n);
+            }
+        }
+        return ret;
     }
-  }
+
+    public void act()
+    {
+        asteroids = getAsteroids();
+        super.act(); 
+    }
+    //public int Screen 
 }
