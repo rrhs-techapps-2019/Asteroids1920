@@ -12,8 +12,12 @@ public class MoveAction implements ServerAction
     public void act(Server server, int clientID, Packet packet)
     {
         NetworkActor ship = server.getShip();
+        NetworkActor turret = server.getTurret();
         ship.setSpeed(1);
-        Packet update = new Packet(PacketAction.UPDATE, ship);
-        server.send(update);
+        turret.setLocation(ship.getX(), ship.getY());
+        Packet updateShip = new Packet(PacketAction.UPDATE, ship);
+        Packet updateTurret = new Packet(PacketAction.UPDATE, turret);
+        server.send(updateShip);
+        server.send(updateTurret);
     }
 }
