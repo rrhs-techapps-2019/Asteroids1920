@@ -2,15 +2,19 @@ package org.rrhs.asteroids.network;
 
 import org.rrhs.asteroids.GameState;
 
+import java.util.Map;
+
 public class Client extends mayflower.net.Client
 {
     private boolean connected;
     private GameState state;
+    private MessageHandler messageHandler;
 
     public Client(GameState state)
     {
         connected = false;
         this.state = state;
+        messageHandler = new MessageHandler();
         connect("localhost", 8080);
     }
 
@@ -26,6 +30,7 @@ public class Client extends mayflower.net.Client
      */
     public void process(String message)
     {
+        Map<String, String> parsedMessage = messageHandler.parseMessage(message);
         System.out.println("Process: " + message);
         state.addUpdate(message);
     }

@@ -16,6 +16,7 @@ public class Server extends mayflower.net.Server
     private Ship ship;
     private Map<Integer, NetworkActor> actors;
     private int nextActorId;
+    private MessageHandler messageHandler;
 
     public Server(World world)
     {
@@ -25,6 +26,7 @@ public class Server extends mayflower.net.Server
         this.world = world;
         ship = new Ship(0);
         actors.put(ship.getId(), ship);
+        messageHandler = new MessageHandler();
         world.addObject(ship, world.getWidth() / 2, world.getHeight() / 2);
 
         addAsteroid(10, 10, 10, 1);
@@ -40,7 +42,11 @@ public class Server extends mayflower.net.Server
         asteroid.setSpeed(speed);
         actors.put(asteroid.getId(), asteroid);
         System.out.println(asteroid);
-        send("add asteroid " + asteroid);
+        HashMap<String, String> messageToSend = new HashMap<>();
+        messageToSend.put("action", "add");
+        messageToSend.put("type", asteroid.getType());
+        messageToSend.put("actor", asteroid.toString());
+        send(messageToSend.toString());
     }
 
     /**
@@ -51,29 +57,38 @@ public class Server extends mayflower.net.Server
      */
     public void process(int id, String message)
     {
+        Map<String, String> parsedMessage = messageHandler.parseMessage(message);
+
         System.out.println("Process (" + id + "): " + message);
 
         String[] parts = message.split(" ");
         String action = parts[0];
 
         String type, direction;
-        switch (action)
+        Map<String, String> messageToSend = new HashMap<>();
+        switch (parsedMessage.get("action"))
         {
             case "update":
                 //update the state of all the actors in the world
                 for (NetworkActor actor : actors.values())
                 {
-                    send(id, "add " + actor.getType() + " " + actor);
+                    messageToSend.put("action", "add");
+                    messageToSend.put("type", actor.getType());
+                    messageToSend.put("actor", actor.toString());
+                    send(id, messageToSend.toString());
                 }
                 break;
             case "move":
                 //make ship start moving
                 ship.setSpeed(1);
-                send("update ship " + ship);
+                messageToSend.put("action", "update");
+                messageToSend.put("type", "ship");
+                messageToSend.put("actor", ship.toString());
+                send(messageToSend.toString());
                 break;
             case "turn":
                 //make ship start turning
-                direction = parts[1];
+                direction = parsedMessage.get("direction");
                 if ("left".equals(direction))
                 {
                     ship.setRotationSpeed(-1);
@@ -81,9 +96,10 @@ public class Server extends mayflower.net.Server
                 {
                     ship.setRotationSpeed(1);
                 }
-
-
-                send("update ship " + ship);
+                messageToSend.put("action", "update");
+                messageToSend.put("type", "ship");
+                messageToSend.put("actor", ship.toString());
+                send(messageToSend.toString());
                 break;
             case "stop":
                 type = parts[1];
@@ -97,8 +113,10 @@ public class Server extends mayflower.net.Server
                     //make ship stop moving
                     ship.setSpeed(0);
                 }
-
-                send("update ship " + ship);
+                messageToSend.put("action", "update");
+                messageToSend.put("type", "ship");
+                messageToSend.put("actor", ship.toString());
+                send(messageToSend.toString());
                 break;
         }
     }
