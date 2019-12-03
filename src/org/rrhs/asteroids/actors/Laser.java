@@ -2,41 +2,39 @@ package org.rrhs.asteroids.actors;
 
 import mayflower.MayflowerImage;
 
-import java.util.Timer;
-import java.util.TimerTask;
-
-public class Laser extends NetworkActor
+public class Bullet
 {
-    // TO DO:
-    // [ ] Move laser in space
-    // [ ] Add collsion event with asteroid
-    // [ ] Add decay to laser?
-    int SecPassed = 0;
-    Timer timer = new Timer();
-    TimerTask task = new TimerTask()
-    {
-        @Override
-        public void run()
+        public Laser( Ship from, String direction)
         {
+        this.direction = direction;
+        this.from = from;
+        Picture pic = new Picture("");
+        pic.resize(NA, NA);
+        pic.setBounds(NA, NA, NA, NA);
+        setPicture(pic);
 
         }
-    };
-
-    public Laser(int id)
+    public void update()
     {
-        super(id, "laser");
-        MayflowerImage img = new MayflowerImage("Laser.png");
-        setImage(img);
-    }
+        super.update();
 
-    public void run()
-    {
-        SecPassed++;
+        Actor[] touching = getTouching();
+
+        for(Actor lazer : touching)
+        {
+            if(lazer  instanceof AsteroidBig)
+            {
+                Stage s = getStage();
+                s.removeActor(a);
+                s.removeActor(this);
+            }
+            if(lazer  instanceof AsteroidSmall)
+            {
+                Stage s = getStage();
+                s.removeActor(a);
+                s.removeActor(this);
+            }
+        }
+
 
     }
-
-    public void start()
-    {
-        timer.scheduleAtFixedRate(task, 1000, 1000);
-    }
-}
