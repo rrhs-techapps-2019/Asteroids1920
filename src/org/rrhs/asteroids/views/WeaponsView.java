@@ -33,16 +33,14 @@ public class WeaponsView extends GameView
     // Returns if turrent is ready to reload
     // If reloadTime is 100% => True; else false
     private boolean isReloadReady()
-    {return (reloadTime == 100) ? true : false;}
+    {return (this.reloadTime == 100) ? true : false;}
 
     // Clears the reload meter
     public void clearReload()
-    {
-		
-    }
+    {this.reloadTime = 0;}
 
     // Charges the reload meter based on weapon system's energy (parameter might change)
-    public void reload(int energy)
+    public void reload()
     {
 		
     }
