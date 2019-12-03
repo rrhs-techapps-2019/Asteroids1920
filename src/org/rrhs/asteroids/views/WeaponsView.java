@@ -15,7 +15,7 @@ public class WeaponsView extends GameView
 	int direction;
 	int energy;
 	int reloadTime;
-	
+
     public WeaponsView(Client client, GameState state)
     {
         super(client, state);
@@ -27,14 +27,13 @@ public class WeaponsView extends GameView
     // Makes turret fire laser
     public void fireLaser()
     {
-		
+        if (isReloadReady()) {Laser pew = new Laser();}
     }
 
-    // Gets status of reload meter
-    public int getReload()
-    {
-        return -1;
-    }
+    // Returns if turrent is ready to reload
+    // If reloadTime is 100% => True; else false
+    private boolean isReloadReady()
+    {return (reloadTime == 100) ? true : false;}
 
     // Clears the reload meter
     public void clearReload()
@@ -53,9 +52,5 @@ public class WeaponsView extends GameView
     {
         return 0;
     }
-
-    @Override
-    protected void update()
-    {
-    }
 }
+
