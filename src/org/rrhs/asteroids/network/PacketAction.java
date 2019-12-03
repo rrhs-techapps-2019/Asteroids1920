@@ -10,6 +10,9 @@ public enum PacketAction
     STOP,
     TURN,
     STOP_TURN,
+    TURRET_TURN,
+    TURRET_STOP,
+    FIRE,
     POWER;
 
     public static PacketAction fromString(String action)

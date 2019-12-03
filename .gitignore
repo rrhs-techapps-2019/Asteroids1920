@@ -26,3 +26,6 @@
 out/
 .idea/
 *.iml
+
+### vim
+*.swp
