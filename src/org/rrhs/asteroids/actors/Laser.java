@@ -25,13 +25,15 @@ public class Laser
             if(lazer  instanceof AsteroidBig)
             {
                 Stage s = getStage();
-                s.removeActor(a);
+                s.removeActor(AstroidBig);
+                s.add(AstroidSmall);
+                s.add(AstroidSmall);
                 s.removeActor(this);
             }
             if(lazer  instanceof AsteroidSmall)
             {
                 Stage s = getStage();
-                s.removeActor(a);
+                s.removeActor(AstroidSmall);
                 s.removeActor(this);
             }
         }
