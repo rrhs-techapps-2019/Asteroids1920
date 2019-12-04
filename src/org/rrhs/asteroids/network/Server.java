@@ -61,6 +61,17 @@ public class Server extends mayflower.net.Server
         send(p);
     }
 
+    public void addLaser(int x, int y, int direction)
+    {
+        Laser laser = new Laser(nextActorId++);
+        world.addObject(laser, x ,y);
+        laser.setRotation(direction);
+        laser.setSpeed(5);
+        actors.put(laser.getId(), laser);
+        System.out.println(laser);
+        send("add laser" + laser);
+    }
+
     /**
      * Handle a message from a client
      *
