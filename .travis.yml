@@ -1,0 +1,6 @@
+language: java
+jdk: openjdk8
+install: true
+script:
+  - "/usr/bin/find . -name '*.java' | /usr/bin/xargs /usr/bin/javac -cp lib/*.jar"
+  - "/usr/bin/find . -name '*.class'"
