@@ -3,7 +3,7 @@ package org.rrhs.asteroids;
 import org.rrhs.asteroids.actors.Asteroid;
 import org.rrhs.asteroids.actors.NetworkActor;
 import org.rrhs.asteroids.actors.Ship;
-
+import org.rrhs.asteroids.network.MessageHandler;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -15,11 +15,13 @@ public class GameState
 {
     private Queue<String> updates;
     private Map<Integer, NetworkActor> actors;
+    private MessageHandler messageHandler;
 
     public GameState()
     {
         updates = new LinkedList<>();
         actors = new HashMap<>();
+        messageHandler = new MessageHandler();
     }
 
 
@@ -44,30 +46,26 @@ public class GameState
 
     private void processUpdates()
     {
-        for (int i = 0; i < numUpdates(); i++)
-        {
+        for (int i = 0; i < numUpdates(); i++) {
             String update = getNextUpdate();
+            Map<String, String> parsedMessage = messageHandler.parseMessage(update);
+            String action = parsedMessage.get("action");
 
-            String[] parts = update.split(" ");
-            String action = parts[0];
-
-            String type = parts[1];
-            int id = Integer.parseInt(parts[2]);
-            int x = Integer.parseInt(parts[3]);
-            int y = Integer.parseInt(parts[4]);
-            int rot = Integer.parseInt(parts[5]);
-            int speed = Integer.parseInt(parts[6]);
-            int rotationSpeed = Integer.parseInt(parts[7]);
+            String type = parsedMessage.get("type");
+            Map<String, String> positionData = messageHandler.parseMessage(parsedMessage.get("actor"));
+            int id = Integer.parseInt(positionData.get("id"));
+            int x = Integer.parseInt(positionData.get("x"));
+            int y = Integer.parseInt(positionData.get("y"));
+            int rot = Integer.parseInt(positionData.get("rot"));
+            int speed = Integer.parseInt(positionData.get("speed"));
+            int rotationSpeed = Integer.parseInt(positionData.get("rotspeed"));
 
             NetworkActor actor = actors.get(id);
 
-            if (null == actor)
-            {
-                if ("ship".equals(type))
-                {
+            if (null == actor) {
+                if ("ship".equals(type)) {
                     actor = new Ship(id);
-                } else
-                {
+                } else {
                     actor = new Asteroid(id);
                 }
 
