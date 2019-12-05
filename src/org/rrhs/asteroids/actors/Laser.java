@@ -1,41 +1,46 @@
 package org.rrhs.asteroids.actors;
 
+import mayflower.Actor;
+import mayflower.MayflowerImage;
+import mayflower.World;
+
+import java.util.List;
+
 public class Laser extends NetworkActor
 {
-    public Laser(Ship from, String direction)
+    private final Ship from;
+    private final String direction;
+
+    public Laser(Ship from, String direction, int id)
     {
+        super(id, "laser");
         this.direction = direction;
         this.from = from;
-        Picture pic = new Picture("");
-        pic.resize(NA, NA);
-        pic.setBounds(NA, NA, NA, NA);
-        setPicture(pic);
+
+        MayflowerImage pic = new MayflowerImage("");
+        pic.scale(1.0);
+        this.setImage(pic);
+    }
+
+    @Override
+    public void act()
+    {
+        super.act();
     }
 
     public void update()
     {
-
-        super.update();
-
-        Actor[] touching = getTouching();
-
+        List<Actor> touching = getIntersectingObjects(Actor.class);
 
         for (Actor lazer : touching)
         {
-            if (lazer instanceof AsteroidBig)
+            if (lazer instanceof AsteroidBig || lazer instanceof AsteroidSmall)
             {
-                Stage s = getStage();
-                s.removeActor(a);
-                s.removeActor(this);
-            }
-            if (lazer instanceof AsteroidSmall)
-            {
-                Stage s = getStage();
-                s.removeActor(a);
-                s.removeActor(this);
+                World w = getWorld();
+                w.removeObject(lazer);
+                w.removeObject(this);
+                break;
             }
         }
-
-
     }
-
+}
