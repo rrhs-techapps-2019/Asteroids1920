@@ -2,10 +2,12 @@ package org.rrhs.asteroids.network;
 
 import mayflower.World;
 import org.rrhs.asteroids.actors.NetworkActor;
+import org.rrhs.asteroids.actors.data.PowerData;
 import org.rrhs.asteroids.actors.objects.Asteroid;
 import org.rrhs.asteroids.actors.objects.Ship;
 import org.rrhs.asteroids.network.actions.server.*;
 import org.rrhs.asteroids.util.logging.Logger;
+import org.rrhs.asteroids.views.EngineerView;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,6 +16,7 @@ public class Server extends mayflower.net.Server
 {
     private World world;
     private Ship ship = new Ship(0);
+    private PowerData powerState = EngineerView.getDefaultPowerState();
     private ActionManager<ServerAction> actionManager = new ActionManager<>();
     private Map<Integer, NetworkActor> actors = new HashMap<>(); // ID -> actor map
     private int nextActorId = 1;                                 // Next new actor ID in sequence
@@ -37,6 +40,7 @@ public class Server extends mayflower.net.Server
         actionManager.put(PacketAction.STOP, StopMoveAction.class);
         actionManager.put(PacketAction.TURN, TurnAction.class);
         actionManager.put(PacketAction.STOP_TURN, StopTurnAction.class);
+        actionManager.put(PacketAction.POWER, UpdatePowerAction.class);
         //    end NetworkAction instantiation    //
 
         Logger.info("Server started.");
@@ -80,11 +84,14 @@ public class Server extends mayflower.net.Server
     {
         Logger.info("Client joined: ID " + id);
 
+        Packet powerUpdate = new Packet(PacketAction.POWER, powerState);
+        send(id, powerUpdate);
+
         for (NetworkActor actor : actors.values())
         {
-            Packet p = new Packet(PacketAction.ADD, actor);
-            Logger.debug("Sending actor " + actor.getId() + " -- " + p.toString());
-            send(id, p);
+            Packet actorUpdate = new Packet(PacketAction.ADD, actor);
+            Logger.debug("Sending actor " + actor.getId() + " -- " + actorUpdate.toString());
+            send(id, actorUpdate);
         }
     }
 
@@ -106,6 +113,11 @@ public class Server extends mayflower.net.Server
     public NetworkActor getShip()
     {
         return ship;
+    }
+
+    public void setPowerState(PowerData powerState)
+    {
+        this.powerState = powerState;
     }
 
     public void send(Packet message)

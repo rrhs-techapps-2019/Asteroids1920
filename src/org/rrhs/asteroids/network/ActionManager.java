@@ -22,6 +22,13 @@ public class ActionManager<T>
 
     public T get(PacketAction action)
     {
+        Class<? extends T> target = actionMap.get(action);
+        if (target == null)
+        {
+            Logger.error("No mapping exists for PacketAction." + action + "!");
+            return null;
+        }
+
         return makeInstance(actionMap.get(action));
     }
 

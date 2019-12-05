@@ -44,6 +44,10 @@ public class Runner
         }
     }
 
+    public static void main(String[] args)
+    {
+    }
+
     protected void init(boolean headless)
     {
         Logger.info("Mayflower initialized successfully. (headless=" + headless + ")");
@@ -104,9 +108,5 @@ public class Runner
             Logger.error("Could not initialize instance of " + worldClass.getName() + ": " + e);
         }
         return null;
-    }
-
-    public static void main(String[] args)
-    {
     }
 }

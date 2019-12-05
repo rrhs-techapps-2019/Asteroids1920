@@ -52,7 +52,7 @@ public class Sensors extends GameView
     public ArrayList<NetworkActor> getAsteroids()
     {
         ArrayList<NetworkActor> ret = new ArrayList<NetworkActor>();
-        List<NetworkActor> actors = super.getState().getActors();
+        List<NetworkActor> actors = state.getActors();
         for (int i = actors.size() - 1; i >= 0; i--)
         {
             NetworkActor n = actors.get(i);
@@ -183,7 +183,8 @@ public class Sensors extends GameView
         return putAster;
     }
 
-    public void act()
+    @Override
+    public void update()
     {
         super.act();
         compareCords();
@@ -197,7 +198,7 @@ public class Sensors extends GameView
     //if an asteroid would display on the screen, it is added to a list
     public void compareCords()
     {
-        Collection<NetworkActor> actors = getState().getActors();
+        Collection<NetworkActor> actors = state.getActors();
         NetworkActor s = null;
         for (NetworkActor a : actors)
         {

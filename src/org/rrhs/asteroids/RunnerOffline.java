@@ -2,7 +2,6 @@ package org.rrhs.asteroids;
 
 import mayflower.World;
 import org.rrhs.asteroids.network.DummyClient;
-import org.rrhs.asteroids.views.EngineerView;
 
 /**
  * Offline standalone runner. To be used for testing only.<br>

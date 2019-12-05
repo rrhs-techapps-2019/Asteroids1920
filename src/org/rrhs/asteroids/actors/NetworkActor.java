@@ -68,7 +68,8 @@ public class NetworkActor extends Actor
         ++tick;
     }
 
-    public String toString() {
+    public String toString()
+    {
         Map<String, String> data = new HashMap<>();
         data.put("id", "" + id);
         data.put("x", "" + getX());
