@@ -11,6 +11,10 @@ public class LobbyView extends GameView {
 
     @Override
     public void act() {
-
+        super.showText("CHOOSE YOUR POSITION",50,50);
+        super.showText("WEAPONS PRESS 1",50,100);
+        super.showText("PILOT PRESS 2",50,150);
+        super.showText("SENSORS PRESS 3",50,200);
+        super.showText("ENGINEER PRESS 4",50,100);
     }
 }
