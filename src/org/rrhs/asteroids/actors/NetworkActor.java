@@ -2,6 +2,9 @@ package org.rrhs.asteroids.actors;
 
 import mayflower.Actor;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class NetworkActor extends Actor
 {
     private int id;
@@ -57,10 +60,15 @@ public class NetworkActor extends Actor
         move();
     }
 
-    public String toString()
-    {
-        String SPACE = " ";
-        return id + SPACE + getX() + SPACE + getY() + SPACE + getRotation() + SPACE + getSpeed() + SPACE + getRotationSpeed();
+    public String toString() {
+        Map<String, String> data = new HashMap<>();
+        data.put("id", "" + id);
+        data.put("x", "" + getX());
+        data.put("y", "" + getY());
+        data.put("rotation", "" + getRotation());
+        data.put("speed", "" + getSpeed());
+        data.put("rotspeed", "" + getRotationSpeed());
+        return data.toString();
     }
 
 }
