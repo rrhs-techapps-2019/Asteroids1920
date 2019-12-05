@@ -9,8 +9,8 @@ public class Sensors extends GameView
     //800 by 600 screen per person
     public Sensors(Client client, GameState state){
         super(client,state);
-        asteroids = getAsteroids(); 
-        ship=compareCords();
+        asteroids = getAsteroids();
+        compareCords();
     }
     //gets list of asteroids to use later
     public ArrayList<NetworkActor> getAsteroids(){ 
@@ -27,36 +27,42 @@ public class Sensors extends GameView
 
     public void act()
     {
-        super.act(); 
-        ship = compareCords();
+        super.act();
         asteroids = getAsteroids();
     }
     //public int Screen 
+   
+  //800 by 600 screen per person
+  
+  //gets ship coordinates, then compares those to all asteroids
+  //if an asteroid would display on the screen, it is added to a list
+  public void compareCords(){
+    NetworkActor[] actors =getState().getActors();
+    NetworkActor s = null;
+    for (NetworkActor a:actors){
+      if(a.getType().equals("ship")){
+        s = a;
+        break;
+      }
+    }
+    if(ship!=null){
+      ship = s;
+      int shipx = ship.getX();
+      int shipy = ship.getY();
+      visibleAsteroids = new ArrayList<NetworkActor>();
+      for (NetworkActor a: asteroids){
+        int xdiff = Math.abs(shipx-a.getX());
+        int ydiff = Math.abs(shipy-a.getY());
+        if(xdiff<=400&&ydiff<=300){visibleAsteroids.add(a);}
+      }
+    }
+  }
+      
     public void createScreen(){
      for(NetworkActor asteroid : visibleAsteroids){
          addObject(asteroid,asteroid.getX(),asteroid.getY());
         }
      addObject(ship,ship.getX(),ship.getY());
     }
-    //800 by 600 screen per person
-
-    //gets ship coordinates, later will compare to other things
-    public NetworkActor compareCords(){
-        NetworkActor[] actors =getState().getActors();
-        NetworkActor ship = null;
-        for (NetworkActor a:actors){
-            if(a.getType().equals("ship")){
-                ship = a;
-                break;
-            }
-        }
-        if(ship!=null){
-            int shipx = ship.getX();
-            int shipy = ship.getY();
-        }
-        return ship;
-    }
+    
 }
-// Use some kind of time system to enlarge a circular object and then find out which objects 
-// are touching it and blip them on the screen
-// deal with zoom by having variables that change the size of the background
