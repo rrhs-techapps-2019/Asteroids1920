@@ -30,7 +30,7 @@ public class Laser extends NetworkActor
             }
         }
     }
-    
+
 public void move
         {
         move(2*speed)
