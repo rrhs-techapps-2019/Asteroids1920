@@ -1,34 +1,34 @@
 package org.rrhs.asteroids.actors;
 
-import mayflower.MayflowerImage;
-
-public class Bullet
+public class Laser extends NetworkActor
 {
-        public Laser( Ship from, String direction)
-        {
+    public Laser(Ship from, String direction)
+    {
         this.direction = direction;
         this.from = from;
         Picture pic = new Picture("");
         pic.resize(NA, NA);
         pic.setBounds(NA, NA, NA, NA);
         setPicture(pic);
+    }
 
-        }
     public void update()
     {
+
         super.update();
 
         Actor[] touching = getTouching();
 
-        for(Actor lazer : touching)
+
+        for (Actor lazer : touching)
         {
-            if(lazer  instanceof AsteroidBig)
+            if (lazer instanceof AsteroidBig)
             {
                 Stage s = getStage();
                 s.removeActor(a);
                 s.removeActor(this);
             }
-            if(lazer  instanceof AsteroidSmall)
+            if (lazer instanceof AsteroidSmall)
             {
                 Stage s = getStage();
                 s.removeActor(a);
@@ -38,3 +38,4 @@ public class Bullet
 
 
     }
+
