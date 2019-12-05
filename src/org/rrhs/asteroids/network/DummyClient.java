@@ -25,4 +25,17 @@ public class DummyClient extends Client
     {
         Logger.debug("Dummy client initialized");
     }
+
+
+    @Override
+    public void send(Packet message)
+    {
+        send(message.toString());
+    }
+
+    @Override
+    public void send(String message)
+    {
+        Logger.debug("Message send attempt: {" + message + "}");
+    }
 }

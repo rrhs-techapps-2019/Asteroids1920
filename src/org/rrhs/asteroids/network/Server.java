@@ -3,6 +3,7 @@ package org.rrhs.asteroids.network;
 import mayflower.World;
 import org.rrhs.asteroids.actors.NetworkActor;
 import org.rrhs.asteroids.actors.data.PowerData;
+import org.rrhs.asteroids.actors.data.RoleData;
 import org.rrhs.asteroids.actors.objects.Asteroid;
 import org.rrhs.asteroids.actors.objects.Laser;
 import org.rrhs.asteroids.actors.objects.Ship;
@@ -19,6 +20,7 @@ public class Server extends mayflower.net.Server
     private World world;
     private Ship ship = new Ship(0);
     private Turret turret = new Turret(1);
+    private RoleData roleState = new RoleData();
     private PowerData powerState = EngineerView.getDefaultPowerState();
     private ActionManager<ServerAction> actionManager = new ActionManager<>();
     private Map<Integer, NetworkActor> actors = new HashMap<>(); // ID -> actor map
@@ -51,6 +53,8 @@ public class Server extends mayflower.net.Server
         actionManager.put(PacketAction.TURRET_TURN, TurnTurretAction.class);
         actionManager.put(PacketAction.TURRET_STOP, StopTurretAction.class);
         actionManager.put(PacketAction.FIRE, FireLaserAction.class);
+        actionManager.put(PacketAction.CLAIM_ROLE, ClaimRoleAction.class);
+        actionManager.put(PacketAction.RELEASE_ROLE, ReleaseRoleAction.class);
         //    end NetworkAction instantiation    //
 
         Logger.info("Server started.");
@@ -109,9 +113,20 @@ public class Server extends mayflower.net.Server
     {
         Logger.info("Client joined: ID " + id);
 
+        /// Initial packets
+        // Client ID
+        Packet idUpdate = new Packet(PacketAction.IDENTIFY, String.valueOf(id));
+        send(id, idUpdate);
+
+        // Current power state
         Packet powerUpdate = new Packet(PacketAction.POWER, powerState);
         send(id, powerUpdate);
 
+        // Current role state
+        Packet roleUpdate = new Packet(PacketAction.UPDATE_ROLES, roleState);
+        send(id, roleUpdate);
+
+        // Current actors
         for (NetworkActor actor : actors.values())
         {
             Packet actorUpdate = new Packet(PacketAction.ADD, actor);
@@ -148,6 +163,16 @@ public class Server extends mayflower.net.Server
     public void setPowerState(PowerData powerState)
     {
         this.powerState = powerState;
+    }
+
+    public void setRoleState(RoleData roleState)
+    {
+        this.roleState = roleState;
+    }
+
+    public RoleData getRoleState()
+    {
+        return roleState;
     }
 
     public void send(Packet message)
