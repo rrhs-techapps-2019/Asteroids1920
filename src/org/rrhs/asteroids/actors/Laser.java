@@ -2,7 +2,7 @@ package org.rrhs.asteroids.actors;
 
 import mayflower.MayflowerImage;
 
-public class Laser
+public class Laser extends NetworkActor
 {
         public Laser( Ship from, String direction)
         {
@@ -24,17 +24,15 @@ public class Laser
         {
             if(lazer  instanceof AsteroidBig)
             {
-                Stage s = getStage();
-                s.removeActor(AstroidBig);
-                s.add(AstroidSmall);
-                s.add(AstroidSmall);
-                s.removeActor(this);
+                ServerWorld w = getServerWorld();
+
+                w.removeActor(this);
             }
             if(lazer  instanceof AsteroidSmall)
             {
-                Stage s = getStage();
-                s.removeActor(AstroidSmall);
-                s.removeActor(this);
+                ServerWorld w = getServerWorld();
+                w.removeActor(AstroidSmall);
+                w.removeActor(this);
             }
         }
 
