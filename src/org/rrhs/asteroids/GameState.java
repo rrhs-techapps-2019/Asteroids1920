@@ -2,13 +2,11 @@ package org.rrhs.asteroids;
 
 import org.rrhs.asteroids.actors.NetworkActor;
 import org.rrhs.asteroids.actors.data.PowerData;
+import org.rrhs.asteroids.actors.data.RoleData;
 import org.rrhs.asteroids.network.ActionManager;
 import org.rrhs.asteroids.network.Packet;
 import org.rrhs.asteroids.network.PacketAction;
-import org.rrhs.asteroids.network.actions.client.AddActorAction;
-import org.rrhs.asteroids.network.actions.client.ClientAction;
-import org.rrhs.asteroids.network.actions.client.UpdateActorAction;
-import org.rrhs.asteroids.network.actions.client.UpdatePowerAction;
+import org.rrhs.asteroids.network.actions.client.*;
 
 import java.util.*;
 
@@ -20,7 +18,9 @@ public class GameState
     private final ActionManager<ClientAction> actionManager = new ActionManager<>();
     private final Queue<String> updates = new LinkedList<>();           // Updates queued for next frame
     private final Map<Integer, NetworkActor> actors = new HashMap<>();  // ID -> NetworkActor map
+    private RoleData roleState = new RoleData();
     private PowerData powerState;
+    private int clientId;
 
     public GameState()
     {
@@ -28,6 +28,8 @@ public class GameState
         actionManager.put(PacketAction.ADD, AddActorAction.class);
         actionManager.put(PacketAction.UPDATE, UpdateActorAction.class);
         actionManager.put(PacketAction.POWER, UpdatePowerAction.class);
+        actionManager.put(PacketAction.UPDATE_ROLES, UpdateRolesAction.class);
+        actionManager.put(PacketAction.IDENTIFY, IdentAction.class);
         // End ClientAction instantiation //
     }
 
@@ -85,5 +87,25 @@ public class GameState
     public PowerData getPowerState()
     {
         return powerState;
+    }
+
+    public void setRoleState(RoleData roleState)
+    {
+        this.roleState = roleState;
+    }
+
+    public RoleData getRoleState()
+    {
+        return roleState;
+    }
+
+    public void setClientId(int clientId)
+    {
+        this.clientId = clientId;
+    }
+
+    public int getClientId()
+    {
+        return clientId;
     }
 }

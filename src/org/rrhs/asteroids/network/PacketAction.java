@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 public enum PacketAction
 {
+    IDENTIFY,
     ADD,
     UPDATE,
     MOVE,
@@ -13,7 +14,10 @@ public enum PacketAction
     TURRET_TURN,
     TURRET_STOP,
     FIRE,
-    POWER;
+    POWER,
+    CLAIM_ROLE,
+    RELEASE_ROLE,
+    UPDATE_ROLES;
 
     public static PacketAction fromString(String action)
     {
