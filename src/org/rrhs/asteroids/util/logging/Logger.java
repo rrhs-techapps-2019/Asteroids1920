@@ -222,7 +222,7 @@ public final class Logger
         final int lineNumber = trace.getLineNumber();
 
         // Write entry to all registered writers
-        final LogEntry entry = new LogEntry(message, level, timestamp, config, callingClass, callingMethod, lineNumber);
+        final LogEntry entry = new LogEntry(message + '\n', level, timestamp, config, callingClass, callingMethod, lineNumber);
         for (final Writer writer : config.getWriters())
         {
             try
