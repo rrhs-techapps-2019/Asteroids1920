@@ -11,8 +11,7 @@ public class WeaponsView extends GameView
     // [ ] Reload meter (talk with Eng. group to find out how long to reload)
     // [ ] Aiming Retical (Different Color? is it different because of energy?)
     // [ ] Asteroids will break into 3 pieces when shot 1 time and the smaller asteroids will be destroyed after 1 shot as well.
-	
-	int direction;
+
 	int energy;
 	int reloadTime;
 
@@ -43,12 +42,6 @@ public class WeaponsView extends GameView
     public void reload()
     {
 		
-    }
-
-    // Gets the rotation of the turret (0-359 will be the direction ship is facing)
-    public int getDirection()
-    {
-        return 0;
     }
 }
 
