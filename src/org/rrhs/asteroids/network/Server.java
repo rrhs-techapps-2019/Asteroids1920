@@ -1,9 +1,9 @@
 package org.rrhs.asteroids.network;
 
 import mayflower.World;
-import org.rrhs.asteroids.actors.Asteroid;
+import org.rrhs.asteroids.actors.objects.Asteroid;
 import org.rrhs.asteroids.actors.NetworkActor;
-import org.rrhs.asteroids.actors.Ship;
+import org.rrhs.asteroids.actors.objects.Ship;
 
 import java.util.HashMap;
 import java.util.Map;

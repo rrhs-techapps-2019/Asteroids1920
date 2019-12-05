@@ -1,8 +1,9 @@
-package org.rrhs.asteroids.actors;
+package org.rrhs.asteroids.actors.objects;
 
 import mayflower.Actor;
 import mayflower.MayflowerImage;
 import mayflower.World;
+import org.rrhs.asteroids.actors.NetworkActor;
 
 import java.util.List;
 

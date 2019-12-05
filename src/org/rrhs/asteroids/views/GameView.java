@@ -2,9 +2,9 @@ package org.rrhs.asteroids.views;
 
 import mayflower.*;
 import org.rrhs.asteroids.GameState;
-import org.rrhs.asteroids.actors.Asteroid;
+import org.rrhs.asteroids.actors.objects.Asteroid;
 import org.rrhs.asteroids.actors.NetworkActor;
-import org.rrhs.asteroids.actors.Ship;
+import org.rrhs.asteroids.actors.objects.Ship;
 import org.rrhs.asteroids.network.Client;
 
 import java.util.HashMap;
