@@ -2,18 +2,18 @@ package org.rrhs.asteroids.actors;
 
 import mayflower.MayflowerImage;
 
-public class Laser extends NetworkActor
-{
+public class Laser extends NetworkActor {
     public Laser(int id) {
         super(id, "laser");
         MayflowerImage img = new MayflowerImage("img/Laser.png");
         img.scale(.2);
         setImage(img);
+        this.speed = speed + speed;
     }
-}
+
 
     public void update() {
-      super.update();
+        super.update();
 
         Actor[] touching = getTouching();
 
@@ -31,9 +31,15 @@ public class Laser extends NetworkActor
         }
     }
 
-public void move
+    {
+        super.act();
+
+        while (isAtEdge())
         {
-        move(2*speed)
+            ServerWorld W = getServerWorld();
+            w.removeActor(this);
         }
+    }
+}
 
 
