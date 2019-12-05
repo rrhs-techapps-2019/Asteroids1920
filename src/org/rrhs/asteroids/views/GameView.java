@@ -1,11 +1,16 @@
 package org.rrhs.asteroids.views;
 
-import mayflower.*;
+import mayflower.Color;
+import mayflower.Keyboard;
+import mayflower.MayflowerImage;
+import mayflower.World;
 import org.rrhs.asteroids.GameState;
 import org.rrhs.asteroids.actors.objects.Asteroid;
 import org.rrhs.asteroids.actors.NetworkActor;
 import org.rrhs.asteroids.actors.objects.Ship;
 import org.rrhs.asteroids.network.Client;
+import org.rrhs.asteroids.util.MayflowerUtils;
+import org.rrhs.asteroids.util.NetworkUtils.Message;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -42,7 +47,7 @@ public class GameView extends World
         resyncCounter++;
         if (resyncCounter > 30)
         {
-            client.send("update");
+            client.send(Message.UPDATE);
             resyncCounter = 0;
         }
     }
@@ -58,7 +63,8 @@ public class GameView extends World
                 if ("ship".equals(nActor.getType()))
                 {
                     actor = new Ship(id);
-                } else
+                }
+                else
                 {
                     actor = new Asteroid(id);
                 }
@@ -76,38 +82,40 @@ public class GameView extends World
     private void processInput()
     {
         // force server update
-        if (Mayflower.isKeyDown(Keyboard.KEY_SPACE) && !Mayflower.wasKeyDown(Keyboard.KEY_SPACE))
+        if (MayflowerUtils.wasKeyPressed(Keyboard.KEY_SPACE))
         {
-            client.send("update");
+            client.send(Message.UPDATE);
         }
 
         // move forward
-        if (Mayflower.isKeyDown(Keyboard.KEY_UP) && !Mayflower.wasKeyDown(Keyboard.KEY_UP))
+        if (MayflowerUtils.wasKeyPressed(Keyboard.KEY_UP))
         {
-            client.send("move");
-        } else if (!Mayflower.isKeyDown(Keyboard.KEY_UP) && Mayflower.wasKeyDown(Keyboard.KEY_UP))
+            client.send(Message.START_MOVE);
+        }
+        else if (MayflowerUtils.wasKeyReleased(Keyboard.KEY_UP))
         {
-            client.send("stop move");
+            client.send(Message.STOP_MOVE);
         }
 
         // turn left
-        if (Mayflower.isKeyDown(Keyboard.KEY_LEFT) && !Mayflower.wasKeyDown(Keyboard.KEY_LEFT))
+        if (MayflowerUtils.wasKeyPressed(Keyboard.KEY_LEFT))
         {
-            client.send("turn left");
-        } else if (!Mayflower.isKeyDown(Keyboard.KEY_LEFT) && Mayflower.wasKeyDown(Keyboard.KEY_LEFT))
+            client.send(Message.START_TURN_LEFT);
+        }
+        else if (MayflowerUtils.wasKeyReleased(Keyboard.KEY_LEFT))
         {
-            client.send("stop turn");
+            client.send(Message.STOP_TURN);
         }
 
         // turn right
-        if (Mayflower.isKeyDown(Keyboard.KEY_RIGHT) && !Mayflower.wasKeyDown(Keyboard.KEY_RIGHT))
+        if (MayflowerUtils.wasKeyPressed(Keyboard.KEY_RIGHT))
         {
-            client.send("turn right");
-        } else if (!Mayflower.isKeyDown(Keyboard.KEY_RIGHT) && Mayflower.wasKeyDown(Keyboard.KEY_RIGHT))
-        {
-            client.send("stop turn");
+            client.send(Message.START_TURN_RIGHT);
         }
-
+        else if (MayflowerUtils.wasKeyReleased(Keyboard.KEY_RIGHT))
+        {
+            client.send(Message.STOP_TURN);
+        }
     }
 }
   

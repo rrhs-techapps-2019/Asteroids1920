@@ -10,12 +10,12 @@ import java.time.Instant;
  */
 public final class Logger
 {
-    // --- LogLevel.FATAL ---
-
     // Non-instantiable
     private Logger()
     {
     }
+
+    // --- LogLevel.FATAL ---
 
     /**
      * Log a message at {@link LogLevel#FATAL}.
@@ -37,8 +37,6 @@ public final class Logger
         log(o.toString(), LogLevel.FATAL);
     }
 
-    // --- LogLevel.ERROR ---
-
     /**
      * Log a {@link Throwable} at {@link LogLevel#FATAL}.
      *
@@ -48,6 +46,8 @@ public final class Logger
     {
         log(e.getMessage(), LogLevel.FATAL);
     }
+
+    // --- LogLevel.ERROR ---
 
     /**
      * Log a message at {@link LogLevel#ERROR}.
@@ -69,8 +69,6 @@ public final class Logger
         log(o.toString(), LogLevel.ERROR);
     }
 
-    // --- LogLevel.WARN ---
-
     /**
      * Log a {@link Throwable} at {@link LogLevel#ERROR}.
      *
@@ -80,6 +78,8 @@ public final class Logger
     {
         log(e.getMessage(), LogLevel.ERROR);
     }
+
+    // --- LogLevel.WARN ---
 
     /**
      * Log a message at {@link LogLevel#WARN}.
@@ -101,8 +101,6 @@ public final class Logger
         log(o.toString(), LogLevel.WARN);
     }
 
-    // --- LogLevel.INFO ---
-
     /**
      * Log a {@link Throwable} at {@link LogLevel#WARN}.
      *
@@ -112,6 +110,8 @@ public final class Logger
     {
         log(e.getMessage(), LogLevel.WARN);
     }
+
+    // --- LogLevel.INFO ---
 
     /**
      * Log a message at {@link LogLevel#INFO}.
@@ -133,8 +133,6 @@ public final class Logger
         log(o.toString(), LogLevel.INFO);
     }
 
-    // --- LogLevel.DEBUG ---
-
     /**
      * Log a {@link Throwable} at {@link LogLevel#INFO}.
      *
@@ -144,6 +142,8 @@ public final class Logger
     {
         log(e.getMessage(), LogLevel.INFO);
     }
+
+    // --- LogLevel.DEBUG ---
 
     /**
      * Log a message at {@link LogLevel#DEBUG}.
@@ -165,8 +165,6 @@ public final class Logger
         log(o.toString(), LogLevel.DEBUG);
     }
 
-    // --- LogLevel.TRACE ---
-
     /**
      * Log a {@link Throwable} at {@link LogLevel#DEBUG}.
      *
@@ -176,6 +174,8 @@ public final class Logger
     {
         log(e.getMessage(), LogLevel.DEBUG);
     }
+
+    // --- LogLevel.TRACE ---
 
     /**
      * Log a message at {@link LogLevel#TRACE}.

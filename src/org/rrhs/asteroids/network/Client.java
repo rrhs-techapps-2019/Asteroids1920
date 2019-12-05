@@ -1,17 +1,18 @@
 package org.rrhs.asteroids.network;
 
 import org.rrhs.asteroids.GameState;
+import org.rrhs.asteroids.util.NetworkUtils;
+import org.rrhs.asteroids.util.logging.Logger;
 
 public class Client extends mayflower.net.Client
 {
-    private boolean connected;
+    private boolean connected = false;
     private GameState state;
 
     public Client(GameState state)
     {
-        connected = false;
         this.state = state;
-        connect("localhost", 8080);
+        init();
     }
 
     public boolean isConnected()
@@ -37,7 +38,7 @@ public class Client extends mayflower.net.Client
      */
     public void onDisconnect(String message)
     {
-        System.out.println("Disconnected from server: " + message);
+        Logger.debug("Disconnected from server: " + message);
     }
 
     /**
@@ -47,5 +48,24 @@ public class Client extends mayflower.net.Client
     {
         System.out.println("Connected to server!");
         connected = true;
+    }
+
+    /**
+     * Send a predefined message to the server
+     *
+     * @param message Message to send
+     * @see org.rrhs.asteroids.util.NetworkUtils.Message
+     */
+    public void send(NetworkUtils.Message message)
+    {
+        super.send(message.getRaw());
+    }
+
+    /**
+     * Initialize this Client. Called once upon instantiation.
+     */
+    protected void init()
+    {
+        connect("localhost", 8080);
     }
 }
