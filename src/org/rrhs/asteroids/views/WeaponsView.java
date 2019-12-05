@@ -1,6 +1,8 @@
 package org.rrhs.asteroids.views;
 import org.rrhs.asteroids.GameState;
 import org.rrhs.asteroids.network.Client;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class WeaponsView extends GameView
 {
@@ -18,9 +20,10 @@ public class WeaponsView extends GameView
     public WeaponsView(Client client, GameState state)
     {
         super(client, state);
-		direction = 0;
 		energy = 0;
-		reloadTime = 0;
+		reloadTime = 10;
+		Timer timer = new Timer();
+		TimerTask task = new Cooldown(reloadTime);
     }
 
     // Makes turret fire laser
@@ -46,6 +49,7 @@ public class WeaponsView extends GameView
 
     private void processInput()
     {
+        if (Mayflower.isKeyDown())
         // turn left
         if (Mayflower.isKeyDown(Keyboard.KEY_LEFT) && !Mayflower.wasKeyDown(Keyboard.KEY_LEFT))
         {
@@ -67,3 +71,27 @@ public class WeaponsView extends GameView
     }
 }
 
+private class Cooldown extends TimerTask
+{
+    private int cooldownSec;
+    private int counter;
+
+    public cooldown(int cooldownSec)
+    {
+        this.cooldownSec = cooldownSec * 60;
+        this.counter = 0;
+    }
+
+    public void run()
+    {
+        if (counter < cooldownSec)
+        {
+            counter++;
+        }
+    }
+
+    public boolean isCooldownDone()
+    {
+        return counter == cooldownSec
+    }
+}
