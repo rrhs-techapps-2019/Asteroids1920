@@ -7,12 +7,13 @@ import org.rrhs.asteroids.actors.NetworkActor;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class FirstPersonView extends World {
+public abstract class FirstPersonView extends GameView {
     private GameState gameState;
     private HashMap<NetworkActor, FPAsteroidActor> asteroidMap;
     private ArrayList<FPAsteroidActor> asteroidCache;
 
     private static final int INIT_CACHE_SIZE = 8;
+    private static final int FOCAL_LENGTH = 1;
 
     public FirstPersonView(GameState gameState) {
         this.gameState = gameState;
@@ -29,6 +30,14 @@ public class FirstPersonView extends World {
     public void act() {
 
     }
+
+    public void getAsteroidX(int trueX, int trueY) {
+	double rot = calculateRotation();
+    }
+
+    //pilot: returns ship rotation
+    //weapons: returns ship rotation + view rotation relative to ship
+    public abstract double calculateRotation();
 
     class SpaceBG extends Actor {
         public SpaceBG() {
