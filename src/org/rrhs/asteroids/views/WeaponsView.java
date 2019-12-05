@@ -43,5 +43,27 @@ public class WeaponsView extends GameView
     {
 		
     }
+
+    private void processInput()
+    {
+        // turn left
+        if (Mayflower.isKeyDown(Keyboard.KEY_LEFT) && !Mayflower.wasKeyDown(Keyboard.KEY_LEFT))
+        {
+            client.send("turnTurret left");
+        } else if (!Mayflower.isKeyDown(Keyboard.KEY_LEFT) && Mayflower.wasKeyDown(Keyboard.KEY_LEFT))
+        {
+            client.send("stop turnTurret");
+        }
+
+        // turn right
+        if (Mayflower.isKeyDown(Keyboard.KEY_RIGHT) && !Mayflower.wasKeyDown(Keyboard.KEY_RIGHT))
+        {
+            client.send("turnTurret right");
+        } else if (!Mayflower.isKeyDown(Keyboard.KEY_RIGHT) && Mayflower.wasKeyDown(Keyboard.KEY_RIGHT))
+        {
+            client.send("stop turnTurret");
+        }
+
+    }
 }
 
