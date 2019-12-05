@@ -1,30 +1,24 @@
 package org.rrhs.asteroids.views;
 
 import mayflower.Color;
-import mayflower.Keyboard;
 import mayflower.MayflowerImage;
 import mayflower.World;
 import org.rrhs.asteroids.GameState;
-import org.rrhs.asteroids.RunnerClient;
-import org.rrhs.asteroids.RunnerServer;
 import org.rrhs.asteroids.actors.NetworkActor;
 import org.rrhs.asteroids.network.Client;
 import org.rrhs.asteroids.network.Packet;
 import org.rrhs.asteroids.network.PacketAction;
-import org.rrhs.asteroids.util.MayflowerUtils;
-import org.rrhs.asteroids.util.logging.LogLevel;
-import org.rrhs.asteroids.util.logging.LoggerConfigurator;
-import org.rrhs.asteroids.util.logging.writers.ConsoleWriter;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class GameView extends World
+public abstract class GameView extends World
 {
-    private Client client;
-    private GameState state;
-    private Map<Integer, NetworkActor> actors = new HashMap<>();
-    private int resyncCounter = 0;
+    protected final Client client;
+    protected final GameState state;
+    protected final Map<Integer, NetworkActor> actors = new HashMap<>();  // ID -> Actor map
+
+    private int resyncCounter = 0;  // Number of frames since last forced sync
 
     public GameView(Client client, GameState state)
     {
@@ -33,21 +27,33 @@ public class GameView extends World
         setBackground(new MayflowerImage(getWidth(), getHeight(), Color.BLACK));
     }
 
-    public Client getClient(){
-      return client;
-    }
-    public GameState getState(){
-     return state; 
-    }
+    /**
+     * Called every frame.<br>
+     * Subsequent calls, in order:
+     * <ol>
+     *     <li>{@link #resync}</li>
+     *     <li>{@link GameState#act}</li>
+     *     <li>{@link #update}</li>
+     * </ol>
+     * You don't need to override this; override {@link #update} instead.
+     */
+    @Override
     public void act()
     {
         resync();
         state.act();
-        processInput();
-        processActors();
+        update();
     }
 
-    public void resync()
+    /**
+     * Performs necessary per-frame view updates. Called every frame after sync.
+     */
+    protected abstract void update();
+
+    /**
+     * Forces a network update every 30 frames.
+     */
+    private void resync()
     {
         resyncCounter++;
         if (resyncCounter > 30)
@@ -58,12 +64,14 @@ public class GameView extends World
         }
     }
 
-    public void processActors()
+    // Original processActors method, for future reference
+    private void processActors()
     {
         for (NetworkActor nActor : state.getActors())
         {
             int id = nActor.getId();
             NetworkActor actor = actors.get(id);
+
             if (null == actor)
             {
                 actor = nActor;
@@ -76,72 +84,6 @@ public class GameView extends World
             actor.setSpeed(nActor.getSpeed());
             actor.setRotationSpeed(nActor.getRotationSpeed());
         }
-    }
-
-    private void processInput()
-    {
-        // force server update
-        if (MayflowerUtils.wasKeyPressed(Keyboard.KEY_SPACE))
-        {
-            Packet p = new Packet(PacketAction.UPDATE);
-            client.send(p);
-        }
-
-        // move forward
-        if (MayflowerUtils.wasKeyPressed(Keyboard.KEY_UP))
-        {
-            Packet p = new Packet(PacketAction.MOVE);
-            client.send(p);
-        }
-        else if (MayflowerUtils.wasKeyReleased(Keyboard.KEY_UP))
-        {
-            Packet p = new Packet(PacketAction.STOP);
-            client.send(p);
-        }
-
-        // turn left
-        if (MayflowerUtils.wasKeyPressed(Keyboard.KEY_LEFT))
-        {
-            Packet p = new Packet(PacketAction.TURN, "left");
-            client.send(p);
-        }
-        else if (MayflowerUtils.wasKeyReleased(Keyboard.KEY_LEFT))
-        {
-            Packet p = new Packet(PacketAction.STOP_TURN);
-            client.send(p);
-        }
-
-        // turn right
-        if (MayflowerUtils.wasKeyPressed(Keyboard.KEY_RIGHT))
-        {
-            Packet p = new Packet(PacketAction.TURN, "right");
-            client.send(p);
-        }
-        else if (MayflowerUtils.wasKeyReleased(Keyboard.KEY_RIGHT))
-        {
-            Packet p = new Packet(PacketAction.STOP_TURN);
-            client.send(p);
-        }
-    }
-
-    public static void main(String[] args) throws InterruptedException
-    {
-        LoggerConfigurator.empty()
-                .addWriter(new ConsoleWriter())
-                .level(LogLevel.DEBUG)
-                .activate();
-        new RunnerServer();
-        new Thread(() -> {
-            try
-            {
-                Thread.sleep(1000L);
-            }
-            catch (InterruptedException e)
-            {
-                e.printStackTrace();
-            }
-            new RunnerClient(GameView.class);
-        }).start();
     }
 }
   

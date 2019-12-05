@@ -1,6 +1,7 @@
 package org.rrhs.asteroids.network;
 
 import org.rrhs.asteroids.actors.NetworkActor;
+import org.rrhs.asteroids.actors.data.Data;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -16,7 +17,12 @@ public class Packet
      */
     public Packet(PacketAction action, NetworkActor actor)
     {
-        populateFields(action.toString(), actor.toString(), actor.getType());
+        populateFields(action, actor.toString(), actor.getType());
+    }
+
+    public Packet(PacketAction action, Data<?, ?> data)
+    {
+        populateFields(action, data.toString(), null);
     }
 
     /**
@@ -24,7 +30,7 @@ public class Packet
      */
     public Packet(PacketAction action)
     {
-        populateFields(action.toString(), null, null);
+        populateFields(action, null, null);
     }
 
     /**
@@ -32,7 +38,7 @@ public class Packet
      */
     public Packet(PacketAction action, String type)
     {
-        populateFields(action.toString(), null, type);
+        populateFields(action, null, type);
     }
 
     /**
@@ -67,9 +73,9 @@ public class Packet
                 .collect(Collectors.joining(":"));
     }
 
-    private void populateFields(String action, String data, String type)
+    private void populateFields(PacketAction action, String data, String type)
     {
-        fields.put("action", action);
+        fields.put("action", action.toString());
         fields.put("data", data);
         fields.put("type", type);
     }

@@ -23,6 +23,10 @@ public final class NetworkUtils
         TYPE_MAP.put("asteroid", Asteroid.class);
     }
 
+    private NetworkUtils()
+    {
+    }
+
     public static Map<String, Integer> reconstituteMap(String raw)
     {
         return reconstituteMap(raw, Integer::parseInt);
@@ -30,12 +34,17 @@ public final class NetworkUtils
 
     public static <V> Map<String, V> reconstituteMap(String raw, Function<String, V> valueGenerator)
     {
+        return reconstituteMap(raw, Function.identity(), valueGenerator);
+    }
+
+    public static <K, V> Map<K, V> reconstituteMap(String raw, Function<String, K> keyGenerator, Function<String, V> valueGenerator)
+    {
         String[] dataRaw = raw.substring(1, raw.length() - 1)
                 .replaceAll("\\p{javaSpaceChar}", "")
                 .split(",");
         return Arrays.stream(dataRaw)
                 .map(field -> field.split("="))
-                .collect(Collectors.toMap(a -> a[0], a -> valueGenerator.apply(a[1])));
+                .collect(Collectors.toMap(a -> keyGenerator.apply(a[0]), a -> valueGenerator.apply(a[1])));
     }
 
     public static NetworkActor reconstituteActor(String type, Map<String, Integer> data)
@@ -76,9 +85,5 @@ public final class NetworkUtils
         actor.setRotation(data.get("rotation"));
         actor.setSpeed(data.get("speed"));
         actor.setRotationSpeed(data.get("rotspeed"));
-    }
-
-    private NetworkUtils()
-    {
     }
 }

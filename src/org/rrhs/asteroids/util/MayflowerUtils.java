@@ -67,4 +67,17 @@ public final class MayflowerUtils
     {
         world.setBackground(imageFromColor(world.getWidth(), world.getHeight(), color));
     }
+
+    /**
+     * Clamp a value to a range.
+     *
+     * @param value Value to clamp
+     * @param min   Minimum return value
+     * @param max   Maximum return value
+     * @return If value < min, then min; if value > max, then max; otherwise value
+     */
+    public static int clamp(final int value, final int min, final int max)
+    {
+        return Math.max(min, Math.min(max, value));
+    }
 }
