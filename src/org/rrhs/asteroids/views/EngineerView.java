@@ -37,7 +37,7 @@ public class EngineerView extends World
         // Initialize PowerBar list
         bars = Stream.generate(PowerBar::new)
                 .limit(4L)
-                .collect(Collectors.toUnmodifiableList());
+                .collect(Collectors.toList());
 
         // Add power bars to world
         final int padding = 32;
