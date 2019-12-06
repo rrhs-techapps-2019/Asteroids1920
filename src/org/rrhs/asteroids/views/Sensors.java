@@ -10,4 +10,14 @@ public class Sensors extends GameView
     {
         super(client, state);
     }
+
+    @Override
+    protected void processInput()
+    {
+    }
+
+    @Override
+    protected void draw()
+    {
+    }
 }

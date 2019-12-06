@@ -1,14 +1,11 @@
 package org.rrhs.asteroids.views;
 
 import mayflower.Color;
-import mayflower.Keyboard;
-import mayflower.World;
 import org.rrhs.asteroids.GameState;
 import org.rrhs.asteroids.RunnerOffline;
 import org.rrhs.asteroids.actors.ui.PowerBar;
 import org.rrhs.asteroids.network.Client;
 import org.rrhs.asteroids.util.MayflowerUtils;
-import org.rrhs.asteroids.util.NetworkUtils.Message;
 
 import java.util.EnumMap;
 import java.util.List;
@@ -16,20 +13,16 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class EngineerView extends World
+public final class EngineerView extends GameView
 {
-    private final Client client;
-    private final GameState state;
     private final List<PowerBar> bars;
     private final PowerAllocator allocator = new PowerAllocator();
 
-    private int resyncCounter = 0;  // Number of frames since last refresh
-    private int selected = 0;       // Currently selected column
+    private int selected = 0;  // Currently selected column
 
     public EngineerView(Client client, GameState state)
     {
-        this.client = client;
-        this.state = state;
+        super(client, state);
 
         // Set background color
         MayflowerUtils.setBackgroundColor(this, Color.BLACK);
@@ -49,39 +42,12 @@ public class EngineerView extends World
         }
     }
 
-    @Override
-    public void act()
+    protected void processInput()
     {
-        sync();
-        processInput();
-        draw();
     }
 
-    private void sync()
+    protected void draw()
     {
-        resyncCounter++;
-        if (resyncCounter > 30)
-        {
-            client.send(Message.UPDATE);
-        }
-    }
-
-    private void processInput()
-    {
-        if (MayflowerUtils.wasKeyPressed(Keyboard.KEY_RIGHT))
-        {
-
-        }
-
-        if (MayflowerUtils.wasKeyPressed(Keyboard.KEY_LEFT))
-        {
-
-        }
-    }
-
-    private void draw()
-    {
-
     }
 
     /**

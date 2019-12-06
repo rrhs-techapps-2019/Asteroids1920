@@ -43,4 +43,14 @@ public class WeaponsView extends GameView
     {
         return -1;
     }
+
+    @Override
+    protected void processInput()
+    {
+    }
+
+    @Override
+    protected void draw()
+    {
+    }
 }
