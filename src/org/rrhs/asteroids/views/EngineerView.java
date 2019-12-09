@@ -31,14 +31,17 @@ public final class EngineerView extends GameView
         bars = Stream.generate(PowerBar::new)
                 .limit(4L)
                 .collect(Collectors.toList());
+        String[] arr = {"Reserve", "Pilot", "Weapons", "Sensors"};
 
         // Add power bars to world
+
         final int padding = 32;
-        final int delta = (getWidth() - (2 * padding)) / bars.size();
+        final int delta =  (getWidth()+10 - (2 * padding)) / bars.size();
         for (int i = 0; i < bars.size(); i++)
         {
             int xOffset = padding + (delta * i);
-            this.addObject(bars.get(i), xOffset, padding);
+            this.addObject(bars.get(i), xOffset+50, padding);
+            this.showText(arr[i], xOffset+50, padding+350, new Color(102,255,102));
         }
     }
 
