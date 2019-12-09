@@ -59,7 +59,7 @@ public class Ship extends NetworkActor
    
    public void update()
    {
-     if(!Mayflower.wasKeyDown(Keyboard.KEY_SHIFT) || !Mayflower.isKeyDown(Keyboard.KEY_SHIFT))
+     if((!Mayflower.wasKeyDown(Keyboard.KEY_LSHIFT) ||!Mayflower.wasKeyDown(Keyboard.KEY_RSHIFT))  || (!Mayflower.isKeyDown(Keyboard.KEY_LSHIFT) ||!Mayflower.isKeyDown(Keyboard.KEY_RSHIFT)))
           {
        accelerationUp = 0;
        accelerationDown = 0;
@@ -69,23 +69,25 @@ public class Ship extends NetworkActor
      
      while((Mayflower.isKeyDown(Keyboard.KEY_UP)))
           {
-       if((Mayflower.isKeyDown(Keyboard.KEY_SHIFT)))
+       if((Mayflower.isKeyDown(Keyboard.KEY_LSHIFT) || Mayflower.isKeyDown(Keyboard.KEY_RSHIFT)))
           {
        accelerationUp = accelerationUp + energy;
        
      }
        setSpeed(accelerationUp + speed);
       speed = speed + accelerationUp;
+      move();
      }
       while((Mayflower.isKeyDown(Keyboard.KEY_DOWN)))
           {
-        if((Mayflower.isKeyDown(Keyboard.KEY_SHIFT)))
+        if((Mayflower.isKeyDown(Keyboard.KEY_LSHIFT) || Mayflower.isKeyDown(Keyboard.KEY_RSHIFT)))
           {
        accelerationDown = accelerationDown - energy;
        
      }
        setSpeed(accelerationDown + speed);
        speed = speed + accelerationDown;
+       move();
      }
         
      
