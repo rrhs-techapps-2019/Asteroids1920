@@ -17,7 +17,7 @@ public class UpdateAllAction implements NetworkAction {
             messageToSend.put("action", "add");
             messageToSend.put("type", actor.getType());
             messageToSend.put("actor", actor.toString());
-            server.send(actor.getId(), messageToSend.toString());
+            server.send(clientID, messageToSend.toString());
         }
 
     }
