@@ -67,28 +67,10 @@ public class Server extends mayflower.net.Server
 
         String type, direction;
         Map<String, String> messageToSend = new HashMap<>();
-        actions.get(parsedMessage.get("action")).act(this);
+        actions.get(parsedMessage.get("action")).act(this, id, parsedMessage);
 
         switch (parsedMessage.get("action"))
         {
-            case "update":
-                //update the state of all the actors in the world
-                for (NetworkActor actor : actors.values())
-                {
-                    messageToSend.put("action", "add");
-                    messageToSend.put("type", actor.getType());
-                    messageToSend.put("actor", actor.toString());
-                    send(id, messageToSend.toString());
-                }
-                break;
-            case "move":
-                //make ship start moving
-                ship.setSpeed(1);
-                messageToSend.put("action", "update");
-                messageToSend.put("type", "ship");
-                messageToSend.put("actor", ship.toString());
-                send(messageToSend.toString());
-                break;
             case "turn":
                 //make ship start turning
                 direction = parsedMessage.get("direction");
@@ -122,7 +104,6 @@ public class Server extends mayflower.net.Server
                 send(messageToSend.toString());
                 break;
         }
-        */
     }
 
     /**
@@ -157,5 +138,9 @@ public class Server extends mayflower.net.Server
 
     public Map<Integer, NetworkActor> getActors() {
         return actors;
+    }
+
+    public NetworkActor getShip() {
+        return ship;
     }
 }

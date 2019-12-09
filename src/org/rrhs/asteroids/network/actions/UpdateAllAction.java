@@ -7,16 +7,17 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class UpdateAllAction implements NetworkAction {
-    @Override
-    public void act(Server server) {
-        Map<String, String> messageToSend = new HashMap<>();
 
+    @Override
+    public void act(Server server, int clientID, Map<String, String> parsedMessage) {
+        Map<String, String> messageToSend = new HashMap<>();
+        Map<Integer, NetworkActor> actors = server.getActors();
         for (NetworkActor actor : actors.values())
         {
             messageToSend.put("action", "add");
             messageToSend.put("type", actor.getType());
             messageToSend.put("actor", actor.toString());
-            server.send(id, messageToSend.toString());
+            server.send(actor.getId(), messageToSend.toString());
         }
 
     }
