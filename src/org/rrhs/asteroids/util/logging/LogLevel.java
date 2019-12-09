@@ -20,6 +20,6 @@ public enum LogLevel
 
     boolean shouldLogAt(LogLevel o)
     {
-        return (this.ordinal > o.ordinal);
+        return (this.ordinal >= o.ordinal);
     }
 }
