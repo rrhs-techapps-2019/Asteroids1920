@@ -1,5 +1,8 @@
 package org.rrhs.asteroids.views;
+import mayflower.Keyboard;
+import mayflower.Mayflower;
 import org.rrhs.asteroids.GameState;
+import org.rrhs.asteroids.actors.Laser;
 import org.rrhs.asteroids.network.Client;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -14,42 +17,42 @@ public class WeaponsView extends GameView
     // [ ] Aiming Retical (Different Color? is it different because of energy?)
     // [ ] Asteroids will break into 3 pieces when shot 1 time and the smaller asteroids will be destroyed after 1 shot as well.
 
-	int energy;
-	int reloadTime;
+	private int energy;
+	private int fireDelay;
+	private Client client;
+	private Cooldown cooldown;
 
     public WeaponsView(Client client, GameState state)
     {
         super(client, state);
 		energy = 0;
-		reloadTime = 10;
-		Timer timer = new Timer();
-		TimerTask task = new Cooldown(reloadTime);
+		fireDelay = 10;
+		this.cooldown = null;
     }
 
-    // Makes turret fire laser
-    public void fireLaser()
+    public void act()
     {
-        if (isReloadReady()) {Laser pew = new Laser();}
+        if (this.cooldown != null)
+        {
+            this.cooldown.run();
+            if(this.cooldown.isCooldownDone())
+            {
+                this.cooldown = null;
+            }
+        }
+
     }
 
-    // Returns if turrent is ready to reload
-    // If reloadTime is 100% => True; else false
-    private boolean isReloadReady()
-    {return (this.reloadTime == 100) ? true : false;}
-
-    // Clears the reload meter
-    public void clearReload()
-    {this.reloadTime = 0;}
-
-    // Charges the reload meter based on weapon system's energy (parameter might change)
-    public void reload()
-    {
-		
-    }
 
     private void processInput()
     {
-        if (Mayflower.isKeyDown())
+
+        if (cooldown != null && Mayflower.isKeyDown(Keyboard.KEY_SPACE) && !Mayflower.wasKeyDown(Keyboard.KEY_SPACE))
+        {
+            this.cooldown = new Cooldown(10);
+            client.send("fire");
+
+        }
         // turn left
         if (Mayflower.isKeyDown(Keyboard.KEY_LEFT) && !Mayflower.wasKeyDown(Keyboard.KEY_LEFT))
         {
@@ -71,12 +74,12 @@ public class WeaponsView extends GameView
     }
 }
 
-private class Cooldown extends TimerTask
+class Cooldown
 {
     private int cooldownSec;
     private int counter;
 
-    public cooldown(int cooldownSec)
+    public Cooldown(int cooldownSec)
     {
         this.cooldownSec = cooldownSec * 60;
         this.counter = 0;
@@ -92,6 +95,7 @@ private class Cooldown extends TimerTask
 
     public boolean isCooldownDone()
     {
-        return counter == cooldownSec
+        return counter >= cooldownSec;
     }
+
 }
