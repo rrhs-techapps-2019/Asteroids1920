@@ -6,11 +6,13 @@ public class Sensors extends GameView
     private ArrayList<NetworkActor> asteroids;
     private NetworkActor ship;
     private ArrayList<NetworkActor> visibleAsteroids;
+    private mayflower.Timer time ;
     //800 by 600 screen per person
     public Sensors(Client client, GameState state){
         super(client,state);
-        asteroids = getAsteroids();
-        compareCords();
+        asteroids = getAsteroids(); 
+        ship=compareCords();
+        time = new mayflower.Timer(1000);
     }
     //gets list of asteroids to use later
     public ArrayList<NetworkActor> getAsteroids(){ 
@@ -24,11 +26,20 @@ public class Sensors extends GameView
         }
         return ret;
     }
-
+    public void moveCircle(int power){
+         time.set(((100-power)*75)+250);  
+         if(time.isDone()){
+             // increase the image size of the circle 
+             time.reset();
+            }
+    }
     public void act()
     {
-        super.act();
+        
+        super.act(); 
+        ship = compareCords();
         asteroids = getAsteroids();
+        
     }
     //public int Screen 
    
@@ -36,17 +47,16 @@ public class Sensors extends GameView
   
   //gets ship coordinates, then compares those to all asteroids
   //if an asteroid would display on the screen, it is added to a list
-  public void compareCords(){
+  public NetworkActor compareCords(){
     NetworkActor[] actors =getState().getActors();
-    NetworkActor s = null;
+    NetworkActor ship = null;
     for (NetworkActor a:actors){
       if(a.getType().equals("ship")){
-        s = a;
+        ship = a;
         break;
       }
     }
     if(ship!=null){
-      ship = s;
       int shipx = ship.getX();
       int shipy = ship.getY();
       visibleAsteroids = new ArrayList<NetworkActor>();
@@ -56,6 +66,7 @@ public class Sensors extends GameView
         if(xdiff<=400&&ydiff<=300){visibleAsteroids.add(a);}
       }
     }
+    return ship;
   }
       
     public void createScreen(){
@@ -64,5 +75,11 @@ public class Sensors extends GameView
         }
      addObject(ship,ship.getX(),ship.getY());
     }
-    
+    //800 by 600 screen per person
+
+    //gets ship coordinates, later will compare to other things
+  
 }
+// Use some kind of time system to enlarge a circular object and then find out which objects 
+// are touching it and blip them on the screen
+// deal with zoom by having variables that change the size of the background
