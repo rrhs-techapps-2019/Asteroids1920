@@ -68,7 +68,7 @@ public class Server extends mayflower.net.Server
         String type, direction;
         Map<String, String> messageToSend = new HashMap<>();
         actions.get(parsedMessage.get("action")).act(this);
-        /*
+
         switch (parsedMessage.get("action"))
         {
             case "update":
@@ -153,5 +153,9 @@ public class Server extends mayflower.net.Server
     public void onExit(int id)
     {
         System.out.println("Disconnected: " + id);
+    }
+
+    public Map<Integer, NetworkActor> getActors() {
+        return actors;
     }
 }
