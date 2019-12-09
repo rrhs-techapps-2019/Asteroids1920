@@ -6,13 +6,19 @@ public class Sensors extends GameView
     private ArrayList<NetworkActor> asteroids;
     private NetworkActor ship;
     private ArrayList<NetworkActor> visibleAsteroids;
-    private mayflower.Timer time ;
+    private int xBase;
+    private int yBase;
+    private int xCur;
+    private int yCur;
+    private double scaleFactor;
     //800 by 600 screen per person
     public Sensors(Client client, GameState state){
         super(client,state);
-        asteroids = getAsteroids(); 
-        ship=compareCords();
-        time = new mayflower.Timer(1000);
+        asteroids = getAsteroids();
+        compareCords();
+        xBase = 800;
+        yBase = 600;
+        scaleFactor = 1.0;
     }
     //gets list of asteroids to use later
     public ArrayList<NetworkActor> getAsteroids(){ 
@@ -26,20 +32,11 @@ public class Sensors extends GameView
         }
         return ret;
     }
-    public void moveCircle(int power){
-         time.set(((100-power)*75)+250);  
-         if(time.isDone()){
-             // increase the image size of the circle 
-             time.reset();
-            }
-    }
+
     public void act()
     {
-        
-        super.act(); 
-        ship = compareCords();
+        super.act();
         asteroids = getAsteroids();
-        
     }
     //public int Screen 
    
@@ -49,14 +46,15 @@ public class Sensors extends GameView
   //if an asteroid would display on the screen, it is added to a list
   public NetworkActor compareCords(){
     NetworkActor[] actors =getState().getActors();
-    NetworkActor ship = null;
+    NetworkActor s = null;
     for (NetworkActor a:actors){
       if(a.getType().equals("ship")){
-        ship = a;
+        s = a;
         break;
       }
     }
     if(ship!=null){
+      ship = s;
       int shipx = ship.getX();
       int shipy = ship.getY();
       visibleAsteroids = new ArrayList<NetworkActor>();
@@ -75,10 +73,31 @@ public class Sensors extends GameView
         }
      addObject(ship,ship.getX(),ship.getY());
     }
+    
+    //takes some arguememt which tells it how to alter its magnification
+    //positive number moves zooms in, negative zooms out
+    //zooms in and out in descrete increments, not proportional to the number input
+    public void changeMagnification(int change)
+    {
+      if(change>0&&scaleFactor>.2){
+        scaleFactor-=.2;
+        double x = xBase*scaleFactor;
+        double y = yBase*scaleFactor;
+        xCur = x;
+        yCur = y;
+      }
+      if(change<0&&scaleFactor<2){
+        scaleFactor+=.2;
+        double x = xBase*scaleFactor;
+        double y = yBase*scaleFactor;
+        xCur = x;
+        yCur = y;
+      }
+    }
     //800 by 600 screen per person
 
     //gets ship coordinates, later will compare to other things
-  
+ 
 }
 // Use some kind of time system to enlarge a circular object and then find out which objects 
 // are touching it and blip them on the screen
