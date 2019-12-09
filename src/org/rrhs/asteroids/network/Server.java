@@ -4,6 +4,7 @@ import mayflower.World;
 import org.rrhs.asteroids.actors.objects.Asteroid;
 import org.rrhs.asteroids.actors.NetworkActor;
 import org.rrhs.asteroids.actors.objects.Ship;
+import org.rrhs.asteroids.network.actions.NetworkAction;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,6 +16,7 @@ public class Server extends mayflower.net.Server
     private Map<Integer, NetworkActor> actors;
     private int nextActorId;
     private MessageHandler messageHandler;
+    private Map<String, NetworkAction> actions;
 
     public Server(World world)
     {
@@ -25,6 +27,7 @@ public class Server extends mayflower.net.Server
         ship = new Ship(0);
         actors.put(ship.getId(), ship);
         messageHandler = new MessageHandler();
+        actions = new HashMap<>();
         world.addObject(ship, world.getWidth() / 2, world.getHeight() / 2);
 
         addAsteroid(10, 10, 10, 1);
@@ -64,6 +67,8 @@ public class Server extends mayflower.net.Server
 
         String type, direction;
         Map<String, String> messageToSend = new HashMap<>();
+        actions.get(parsedMessage.get("action")).act(this);
+        /*
         switch (parsedMessage.get("action"))
         {
             case "update":
@@ -117,6 +122,7 @@ public class Server extends mayflower.net.Server
                 send(messageToSend.toString());
                 break;
         }
+        */
     }
 
     /**
@@ -132,6 +138,11 @@ public class Server extends mayflower.net.Server
         {
             send(id, "add " + actor.getType() + " " + actor);
         }
+    }
+
+    public boolean addNetworkAction(String type, NetworkAction action) {
+        actions.put(type, action);
+        return true;
     }
 
     /**
