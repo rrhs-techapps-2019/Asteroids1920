@@ -11,8 +11,6 @@ public class Ship extends NetworkActor
   private int accelerationUp;
   private int accelerationDown;
   private int speed;
-  private int accelerationLeft;
-  private int accelerationRight;
  private int rotationSpeed;
  private int energy;
   
@@ -28,8 +26,7 @@ public class Ship extends NetworkActor
     energy =1;
      accelerationUp = 0;
    accelerationDown = 0;
-   accelerationLeft = 0;
-   accelerationRight = 0;
+   
   }
   
   public boolean movingUp()
@@ -56,9 +53,32 @@ public class Ship extends NetworkActor
      update();
      
    }
+   public int rotate()
+   {
+     if(Mayflower.isKeyDown(Keyboard.KEY_LEFT) && !Mayflower.wasKeyDown(Keyboard.KEY_LEFT))
+     {
+       this.turn(-getRotationSpeed());
+       return 1;
+     }
+     else if(!Mayflower.isKeyDown(Keyboard.KEY_LEFT) && Mayflower.wasKeyDown(Keyboard.KEY_LEFT))
+     {
+       
+     }
+     if(Mayflower.isKeyDown(Keyboard.KEY_RIGHT) && !Mayflower.wasKeyDown(Keyboard.KEY_RIGHT))
+     {
+       this.turn(getRotationSpeed());
+       return 1;
+     }
+      if(!Mayflower.isKeyDown(Keyboard.KEY_RIGHT) && Mayflower.wasKeyDown(Keyboard.KEY_RIGHT))
+     {
+       
+     }
+     return 0;
+   }
    
    public void update()
-   {
+   { 
+     int i = 0;
      if((!Mayflower.wasKeyDown(Keyboard.KEY_LSHIFT) ||!Mayflower.wasKeyDown(Keyboard.KEY_RSHIFT))  || (!Mayflower.isKeyDown(Keyboard.KEY_LSHIFT) ||!Mayflower.isKeyDown(Keyboard.KEY_RSHIFT)))
           {
        accelerationUp = 0;
@@ -69,6 +89,7 @@ public class Ship extends NetworkActor
      
      while((Mayflower.isKeyDown(Keyboard.KEY_UP)))
           {
+       i = rotate();
        if((Mayflower.isKeyDown(Keyboard.KEY_LSHIFT) || Mayflower.isKeyDown(Keyboard.KEY_RSHIFT)))
           {
        accelerationUp = accelerationUp + energy;
@@ -80,6 +101,7 @@ public class Ship extends NetworkActor
      }
       while((Mayflower.isKeyDown(Keyboard.KEY_DOWN)))
           {
+        i = rotate();
         if((Mayflower.isKeyDown(Keyboard.KEY_LSHIFT) || Mayflower.isKeyDown(Keyboard.KEY_RSHIFT)))
           {
        accelerationDown = accelerationDown - energy;
@@ -90,7 +112,10 @@ public class Ship extends NetworkActor
        move();
      }
         
-     
+     if(i==0)
+     {
+       rotate();
+     }
    }
   
 }
