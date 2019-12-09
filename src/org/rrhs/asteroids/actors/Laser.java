@@ -18,13 +18,15 @@ public class Laser extends NetworkActor {
         Actor[] touching = getTouching();
 
         for (Actor laser : touching) {
-            if (laser touching instanceof AsteroidBig) {
-                ServerWorld W = getServerWorld();
+            if (laser touching instanceof AsteroidBig)
+            {
+                ServerWorld w = getServerWorld();
 
-                s.removeActor(this);
+                w.removeActor(this);
             }
-            if (lazer touching instanceof AsteroidSmall) {
-                ServerWorld W = getServerWorld();
+            if (lazer touching instanceof AsteroidSmall)
+            {
+                ServerWorld w = getServerWorld();
 
                 w.removeActor(this);
             }
@@ -36,7 +38,7 @@ public class Laser extends NetworkActor {
 
         while (isAtEdge())
         {
-            ServerWorld W = getServerWorld();
+            ServerWorld w = getServerWorld();
             w.removeActor(this);
         }
     }
