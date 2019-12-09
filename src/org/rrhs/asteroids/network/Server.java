@@ -68,42 +68,6 @@ public class Server extends mayflower.net.Server
         String type, direction;
         Map<String, String> messageToSend = new HashMap<>();
         actions.get(parsedMessage.get("action")).act(this, id, parsedMessage);
-
-        switch (parsedMessage.get("action"))
-        {
-            case "turn":
-                //make ship start turning
-                direction = parsedMessage.get("direction");
-                if ("left".equals(direction))
-                {
-                    ship.setRotationSpeed(-1);
-                } else
-                {
-                    ship.setRotationSpeed(1);
-                }
-                messageToSend.put("action", "update");
-                messageToSend.put("type", "ship");
-                messageToSend.put("actor", ship.toString());
-                send(messageToSend.toString());
-                break;
-            case "stop":
-                type = parts[1];
-
-                if ("turn".equals(type))
-                {
-                    //make ship stop turning
-                    ship.setRotationSpeed(0);
-                } else
-                {
-                    //make ship stop moving
-                    ship.setSpeed(0);
-                }
-                messageToSend.put("action", "update");
-                messageToSend.put("type", "ship");
-                messageToSend.put("actor", ship.toString());
-                send(messageToSend.toString());
-                break;
-        }
     }
 
     /**
