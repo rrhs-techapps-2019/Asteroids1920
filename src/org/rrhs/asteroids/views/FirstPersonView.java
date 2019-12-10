@@ -14,6 +14,7 @@ public abstract class FirstPersonView extends GameView {
 
     private static final int INIT_CACHE_SIZE = 8;
     private static final int FOCAL_LENGTH = 1;
+    private static final double UNITS_TO_PIXELS = 0.1;
 
     public FirstPersonView(GameState gameState) {
         this.gameState = gameState;
@@ -31,8 +32,23 @@ public abstract class FirstPersonView extends GameView {
 
     }
 
-    public void getAsteroidX(int trueX, int trueY) {
-	double rot = calculateRotation();
+    //returns the x-coordinate of an asteroid's sprite on the screen
+    public int getAsteroidX(int trueX, int trueY) {
+	double rot = Math.toRadians(calculateRotation());
+	double x = ((double) trueX)*Math.cos(rot) - ((double) trueY)*Math.sin(rot);
+	double y = ((double) trueY)*Math.cos(rot) + ((double) trueX)*Math.cos(rot);
+
+	return (int)((getWidth()/2.0) + FOCAL_LENGTH*(x/y)*UNITS_TO_PIXELS);
+    }
+
+    //returns the factor by which the asteroid sprite should be scaled for the perspective view
+    public double getScaleFactor(int trueX, int trueY) {
+	double rot = Math.toRadians(calculateRotation());
+	double x = ((double) trueX)*Math.cos(rot) - ((double) trueY)*Math.sin(rot);
+	double y = ((double) trueY)*Math.cos(rot) + ((double) trueX)*Math.cos(rot);
+
+	return Math.sqrt((Math.pow(FOCAL_LENGTH*x/y, 2.0) + Math.pow(FOCAL_LENGTH, 2.0))
+			/(Math.pow(x, 2.0) + Math.pow(y, 2.0)));
     }
 
     //pilot: returns ship rotation
