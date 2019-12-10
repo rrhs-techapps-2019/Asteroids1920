@@ -42,29 +42,22 @@ public abstract class GameView extends World
      * <ol>
      *     <li>{@link #resync}</li>
      *     <li>{@link GameState#act}</li>
-     *     <li>{@link #processInput}</li>
-     *     <li>{@link #draw}</li>
+     *     <li>{@link #update}</li>
      * </ol>
-     * You don't need to override this; override {@link #processInput} and {@link #draw} instead.
+     * You don't need to override this; override {@link #update} instead.
      */
     @Override
     public void act()
     {
         resync();
         state.act();
-        processInput();
-        draw();
+        update();
     }
 
     /**
-     * Processes keyboard input. Called every frame.
+     * Performs necessary per-frame view updates. Called every frame after sync.
      */
-    protected abstract void processInput();
-
-    /**
-     * Performs actor updates and/or draw everything on screen. Called every frame.
-     */
-    protected abstract void draw();
+    protected abstract void update();
 
     /**
      * Forces a network update every 30 frames.

@@ -45,12 +45,7 @@ public class WeaponsView extends GameView
     }
 
     @Override
-    protected void processInput()
-    {
-    }
-
-    @Override
-    protected void draw()
+    protected void update()
     {
     }
 }

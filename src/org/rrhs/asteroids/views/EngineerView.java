@@ -42,11 +42,7 @@ public final class EngineerView extends GameView
         }
     }
 
-    protected void processInput()
-    {
-    }
-
-    protected void draw()
+    protected void update()
     {
     }
 
