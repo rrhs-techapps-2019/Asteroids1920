@@ -8,10 +8,11 @@ public class Laser extends NetworkActor {
         MayflowerImage img = new MayflowerImage("img/Laser.png");
         img.scale(.2);
         setImage(img);
+        // doubles speed?
         this.speed = speed + speed;
     }
 
-
+//chekcs if toutching Astroid or Ededge of screen and removes its self
     public void update() {
         super.update();
 

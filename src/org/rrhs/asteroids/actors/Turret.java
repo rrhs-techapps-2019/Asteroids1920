@@ -12,6 +12,7 @@ public class Turret extends NetworkActor
         img.scale(.2);
         setImage(img);
     }
+    //update calls the location of the ship and moves the turret with the ship
     public void update() {
         super.update();
         ServerWorld w = getServerWorld();
@@ -19,7 +20,7 @@ public class Turret extends NetworkActor
         int shipY = w.ship.Gety();
     this.setLocation(shipX, shipY);
 
- Might need to use thi to turn in the future, Might not need
+ //Might need to use thi to turn in the future, Might not need
     if(Mayflower.isKeyDown(Keyboard.KEY_LEFT) && !Mayflower.wasKeyDown(Keyboard.KEY_LEFT))
     {
         setRotation(getRotation() + 10);
