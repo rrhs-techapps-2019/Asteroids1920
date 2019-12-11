@@ -1,4 +1,4 @@
-package org.rrhs.asteroids.network.actions;
+package org.rrhs.asteroids.network.serverActions;
 import org.rrhs.asteroids.network.Server;
 
 import java.util.Map;

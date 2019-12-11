@@ -4,7 +4,7 @@ import mayflower.World;
 import org.rrhs.asteroids.actors.objects.Asteroid;
 import org.rrhs.asteroids.actors.NetworkActor;
 import org.rrhs.asteroids.actors.objects.Ship;
-import org.rrhs.asteroids.network.actions.NetworkAction;
+import org.rrhs.asteroids.network.serverActions.NetworkAction;
 
 import java.util.HashMap;
 import java.util.Map;
