@@ -1,9 +1,9 @@
 package org.rrhs.asteroids.actors.ui;
 
 import mayflower.Actor;
+import mayflower.Color;
 import mayflower.Label;
 import mayflower.MayflowerImage;
-import mayflower.Color;
 import org.rrhs.asteroids.util.MayflowerUtils;
 
 /**
@@ -18,6 +18,7 @@ public class PowerBar extends Actor
     private String label = "";
     private static int index = 0; // Unique index
     private Label x = new Label("Can you see this?");
+
     public PowerBar()
     {
         this.setImage(MayflowerUtils.imageFromColor(DEFAULT_WIDTH,
@@ -25,13 +26,19 @@ public class PowerBar extends Actor
                 MayflowerUtils.colorFromHsb((45 * index) % 360, 0.66f, 0.8f)));
         index++;
     }
-    public void setLabel(String var){
+
+    public void setLabel(String var)
+    {
         label = var;
     }
 
     public void setPercentage(final int percentage)
     {
-        int tHeight = (int) ((DEFAULT_HEIGHT / 80.0) * percentage);
+        if (percentage <= 0) getImage().setTransparency(100);
+        else getImage().setTransparency(0);
+
+        int actualPct = MayflowerUtils.clamp(percentage, 1, getHeight());
+        int tHeight = (int) ((DEFAULT_HEIGHT / 80.0) * actualPct);
         int deltaY = getHeight() - tHeight;
 
         MayflowerImage scaled = new MayflowerImage(getImage());
@@ -45,9 +52,9 @@ public class PowerBar extends Actor
     {
 
         x.setText(label);
-        x.setColor(new Color(255,255,255));
+        x.setColor(new Color(255, 255, 255));
         x.act();
-        x.scale(200,200);
+        x.scale(200, 200);
 
     }
 }
