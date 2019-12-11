@@ -1,8 +1,11 @@
 package org.rrhs.asteroids.views;
 
+import mayflower.Actor;
 import mayflower.Color;
+import mayflower.Mayflower;
 import org.rrhs.asteroids.GameState;
 import org.rrhs.asteroids.RunnerOffline;
+import org.rrhs.asteroids.actors.objects.Selector;
 import org.rrhs.asteroids.actors.ui.PowerBar;
 import org.rrhs.asteroids.network.Client;
 import org.rrhs.asteroids.util.MayflowerUtils;
@@ -13,13 +16,16 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static mayflower.Keyboard.*;
+
 public final class EngineerView extends GameView
 {
     private final List<PowerBar> bars;
     private final PowerAllocator allocator = new PowerAllocator();
-
+    private Actor selector = new Selector();
     private int selected = 0;  // Currently selected column
-
+    private int[] selectorX = {-35,155,341,526};
+    private int indexS = 0;
     public EngineerView(Client client, GameState state)
     {
         super(client, state);
@@ -41,12 +47,44 @@ public final class EngineerView extends GameView
         {
             int xOffset = padding + (delta * i);
             this.addObject(bars.get(i), xOffset+50, padding);
-            this.showText(arr[i], xOffset+50, padding+350, new Color(102,255,102));
+           // this.showText(arr[i], xOffset+50, padding+350, new Color(102,255,102));
         }
+        //x=526 sensors (3)
+        //x=341 weapons (2)
+        //x=155 pilot (1)
+        //x=-35 reserve (0)
+
+        this.showText(arr[0],padding+(delta*0)+24, padding+350,new Color(102,255,102));
+        this.showText(arr[1],padding+(delta*1)+55, padding+350,new Color(102,255,102));
+        this.showText(arr[2],padding+(delta*2)+22, padding+350,new Color(102,255,102));
+        this.showText(arr[3],padding+(delta*3)+27, padding+350,new Color(102,255,102));
+        this.addObject(selector,-35,0);
     }
 
     protected void update()
     {
+        if(!Mayflower.wasKeyDown(KEY_LEFT) && Mayflower.isKeyDown(KEY_LEFT)){
+
+            if(indexS == 0){
+                indexS = 3;
+            }
+            else{
+                indexS-=1;
+            }
+
+            selector.setLocation(selectorX[indexS],0);
+
+        }
+        else if(!Mayflower.wasKeyDown(KEY_RIGHT) && Mayflower.isKeyDown(KEY_RIGHT)){
+            if(indexS == 3){
+                indexS = 0;
+            }
+            else{
+                indexS+=1;
+            }
+            selector.setLocation(selectorX[indexS],0);
+            Mayflower.delay(10);
+        }
     }
 
     /**
