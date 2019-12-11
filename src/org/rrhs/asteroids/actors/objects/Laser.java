@@ -2,50 +2,47 @@ package org.rrhs.asteroids.actors.objects;
 
 import mayflower.Actor;
 import mayflower.MayflowerImage;
+import mayflower.World;
 import org.rrhs.asteroids.actors.NetworkActor;
-import org.rrhs.asteroids.network.ServerWorld;
+import org.rrhs.asteroids.actors.Ship;
 
-public class Laser extends NetworkActor {
-    public Laser(int id) {
+import java.util.List;
+
+public class Laser extends NetworkActor
+{
+    private final Ship from;
+    private final String direction;
+
+    public Laser(Ship from, String direction, int id)
+    {
         super(id, "laser");
-        MayflowerImage img = new MayflowerImage("img/Laser.png");
-        img.scale(.2);
-        setImage(img);
-        // doubles speed?
-        this.speed = speed + speed;
+        this.direction = direction;
+        this.from = from;
+
+        MayflowerImage pic = new MayflowerImage("");
+        pic.scale(1.0);
+        this.setImage(pic);
     }
 
-//chekcs if toutching Astroid or Ededge of screen and removes its self
-    public void act() {
-        super.act();
-
-        Actor[] touching = getTouching();
-
-        for (Actor laser : touching) {
-            if (laser touching instanceof AsteroidBig)
-            {
-                ServerWorld w = getServerWorld();
-
-                w.removeActor(this);
-            }
-            if (lazer touching instanceof AsteroidSmall)
-            {
-                ServerWorld w = getServerWorld();
-
-                w.removeActor(this);
-            }
-        }
-    }
-
+    @Override
+    public void act()
     {
         super.act();
+    }
 
-        while (isAtEdge())
+    public void update()
+    {
+        List<Actor> touching = getIntersectingObjects(Actor.class);
+
+        for (Actor lazer : touching)
         {
-            ServerWorld w = getServerWorld();
-            w.removeActor(this);
+            if (lazer instanceof AsteroidBig || lazer instanceof AsteroidSmall)
+            {
+                World w = getWorld();
+                w.removeObject(lazer);
+                w.removeObject(this);
+                break;
+            }
         }
     }
 }
-
-
