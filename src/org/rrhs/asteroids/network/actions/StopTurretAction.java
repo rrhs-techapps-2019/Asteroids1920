@@ -23,7 +23,7 @@ public class StopTurretAction implements NetworkAction {
             turret.setSpeed(0);
         }
         messageToSend.put("action", "update");
-        messageToSend.put("type", "ship");
+        messageToSend.put("type", "turret");
         messageToSend.put("actor", turret.toString());
         server.send(messageToSend.toString());
     }

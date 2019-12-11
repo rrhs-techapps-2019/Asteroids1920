@@ -20,7 +20,7 @@ public class TurnTurretAction implements NetworkAction {
             turret.setRotationSpeed(1);
         }
         messageToSend.put("action", "update");
-        messageToSend.put("type", "ship");
+        messageToSend.put("type", "turret");
         messageToSend.put("actor", turret.toString());
         server.send(messageToSend.toString());
 
