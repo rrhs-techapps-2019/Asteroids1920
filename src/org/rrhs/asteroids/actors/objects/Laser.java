@@ -1,47 +1,49 @@
 package org.rrhs.asteroids.actors.objects;
 
-import mayflower.Actor;
 import mayflower.MayflowerImage;
-import mayflower.World;
 import org.rrhs.asteroids.actors.NetworkActor;
 
-import java.util.List;
-
-public class Laser extends NetworkActor
-{
-    private final Ship from;
-    private final String direction;
-
-    public Laser(Ship from, String direction, int id)
-    {
+public class Laser extends NetworkActor {
+    public Laser(int id) {
         super(id, "laser");
-        this.direction = direction;
-        this.from = from;
-
-        MayflowerImage pic = new MayflowerImage("");
-        pic.scale(1.0);
-        this.setImage(pic);
+        MayflowerImage img = new MayflowerImage("img/Laser.png");
+        img.scale(.2);
+        setImage(img);
+        // doubles speed?
+        this.speed = speed + speed;
     }
 
-    @Override
-    public void act()
-    {
-        super.act();
-    }
+//chekcs if toutching Astroid or Ededge of screen and removes its self
+    public void update() {
+        super.update();
 
-    public void update()
-    {
-        List<Actor> touching = getIntersectingObjects(Actor.class);
+        Actor[] touching = getTouching();
 
-        for (Actor lazer : touching)
-        {
-            if (lazer instanceof AsteroidBig || lazer instanceof AsteroidSmall)
+        for (Actor laser : touching) {
+            if (laser touching instanceof AsteroidBig)
             {
-                World w = getWorld();
-                w.removeObject(lazer);
-                w.removeObject(this);
-                break;
+                ServerWorld w = getServerWorld();
+
+                w.removeActor(this);
+            }
+            if (lazer touching instanceof AsteroidSmall)
+            {
+                ServerWorld w = getServerWorld();
+
+                w.removeActor(this);
             }
         }
     }
+
+    {
+        super.act();
+
+        while (isAtEdge())
+        {
+            ServerWorld w = getServerWorld();
+            w.removeActor(this);
+        }
+    }
 }
+
+

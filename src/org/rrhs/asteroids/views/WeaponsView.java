@@ -2,10 +2,7 @@ package org.rrhs.asteroids.views;
 import mayflower.Keyboard;
 import mayflower.Mayflower;
 import org.rrhs.asteroids.GameState;
-import org.rrhs.asteroids.actors.Laser;
 import org.rrhs.asteroids.network.Client;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class WeaponsView extends GameView
 {
