@@ -3,6 +3,8 @@ package org.rrhs.asteroids;
 import org.rrhs.asteroids.actors.objects.Asteroid;
 import org.rrhs.asteroids.actors.NetworkActor;
 import org.rrhs.asteroids.actors.objects.Ship;
+import org.rrhs.asteroids.network.MessageHandler;
+import org.rrhs.asteroids.network.Packet;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -13,6 +15,7 @@ public class GameState
 {
     private Queue<String> updates;
     private Map<Integer, NetworkActor> actors;
+    MessageHandler messageParser = new MessageHandler();
 
     public GameState()
     {
@@ -44,9 +47,9 @@ public class GameState
     {
         for (int i = 0; i < numUpdates(); i++)
         {
-            String update = getNextUpdate();
+            Packet update = messageParser.parseMessage(getNextUpdate());
 
-            String[] parts = update.split(" ");
+            String[] parts = update.getData().split(" ");
             String action = parts[0];
 
             String type = parts[1];
@@ -85,6 +88,7 @@ public class GameState
 
     public void addUpdate(String update)
     {
+        System.out.println("update>>" + update);
         updates.add(update);
     }
 

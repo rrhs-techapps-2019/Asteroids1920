@@ -1,6 +1,7 @@
 package org.rrhs.asteroids.network.serverActions;
 
 import org.rrhs.asteroids.actors.NetworkActor;
+import org.rrhs.asteroids.network.Packet;
 import org.rrhs.asteroids.network.Server;
 
 import java.util.HashMap;
@@ -8,11 +9,10 @@ import java.util.Map;
 
 public class StopShipAction implements NetworkAction {
     @Override
-    public void act(Server server, int clientID, Map<String, String> parsedMessage) {
-        String action = parsedMessage.get("action");
+    public void act(Server server, int clientID, Packet packet) {
+        String action = packet.getAction();
         NetworkActor ship = server.getShip();
-        Map<String, String> messageToSend = new HashMap<>();
-
+        Packet p = new Packet("update", ship);
         if ("turn".equals(action))
         {
             //make ship stop turning
@@ -22,9 +22,6 @@ public class StopShipAction implements NetworkAction {
             //make ship stop moving
             ship.setSpeed(0);
         }
-        messageToSend.put("action", "update");
-        messageToSend.put("type", "ship");
-        messageToSend.put("actor", ship.toString());
-        server.send(messageToSend.toString());
+        server.send(p.toString());
     }
 }

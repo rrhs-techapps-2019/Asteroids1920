@@ -12,6 +12,11 @@ public class Packet {
         this.actor = actor.toString();
         this.data = data;
     }
+    public Packet(String action) {
+        this.action = action;
+        this.actor = null;
+        this.data = null;
+    }
     public Packet(String action, String data) {
         this.action = action;
         this.actor = null;
@@ -21,6 +26,11 @@ public class Packet {
         this.action = action;
         this.actor = actor.toString();
         this.data = null;
+    }
+    public Packet(String action, String actor, String data) {
+        this.action = action;
+        this.actor = actor;
+        this.data = data;
     }
 
     public String setData(String data) {
@@ -39,5 +49,13 @@ public class Packet {
         String ret = this.action;
         this.action = action;
         return ret;
+    }
+
+    public String getActor() { return actor; }
+    public String getAction() { return action; }
+    public String getData() { return data; }
+
+    public String toString() {
+        return actor + "--==--" + action + "--==--" + data;
     }
 }

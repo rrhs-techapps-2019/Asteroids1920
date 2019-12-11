@@ -43,11 +43,8 @@ public class Server extends mayflower.net.Server
         asteroid.setSpeed(speed);
         actors.put(asteroid.getId(), asteroid);
         System.out.println(asteroid);
-        HashMap<String, String> messageToSend = new HashMap<>();
-        messageToSend.put("action", "add");
-        messageToSend.put("type", asteroid.getType());
-        messageToSend.put("actor", asteroid.toString());
-        send(messageToSend.toString());
+        Packet p = new Packet("add", asteroid);
+        send(p.toString());
     }
 
     /**
@@ -58,16 +55,15 @@ public class Server extends mayflower.net.Server
      */
     public void process(int id, String message)
     {
-        Map<String, String> parsedMessage = messageHandler.parseMessage(message);
+        Packet packet = messageHandler.parseMessage(message);
 
         System.out.println("Process (" + id + "): " + message);
 
         String[] parts = message.split(" ");
-        String action = parts[0];
+        String action = packet.getAction();
 
         String type, direction;
-        Map<String, String> messageToSend = new HashMap<>();
-        actions.get(parsedMessage.get("action")).act(this, id, parsedMessage);
+        actions.get(packet.actor).act(this, id, packet);
     }
 
     /**
@@ -81,7 +77,9 @@ public class Server extends mayflower.net.Server
 
         for (NetworkActor actor : actors.values())
         {
-            send(id, "add " + actor.getType() + " " + actor);
+            Packet p = new Packet("add", actor);
+            System.out.println(">>" + p.toString());
+            send(id, p.toString());
         }
     }
 
