@@ -10,7 +10,7 @@ public class TurnTurretAction implements NetworkAction {
     @Override
     public void act(Server server, int clientID, Map<String, String> parsedMessage) {
         Map<String, String> messageToSend = new HashMap<>();
-        NetworkActor turret = server.getShip();
+        NetworkActor turret = server.getTurret();
         String direction = parsedMessage.get("direction");
         if ("left".equals(direction))
         {

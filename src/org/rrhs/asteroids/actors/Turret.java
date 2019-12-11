@@ -18,6 +18,17 @@ public class Turret extends NetworkActor
         int shipX = w.ship.GetX();
         int shipY = w.ship.Gety();
     this.setLocation(shipX, shipY);
+    
+// Might need to use thi to turn in the future, Might not need
+//    if(Mayflower.isKeyDown(Keyboard.KEY_LEFT) && !Mayflower.wasKeyDown(Keyboard.KEY_LEFT))
+//    {
+//        setRotation(1);
+//    }
+//
+//        if(Mayflower.isKeyDown(Keyboard.KEY_RIGHT) && !Mayflower.wasKeyDown(Keyboard.KEY_RIGHT))
+//        {
+//            setRotation(-1);
+//        }
 
     }
 }
