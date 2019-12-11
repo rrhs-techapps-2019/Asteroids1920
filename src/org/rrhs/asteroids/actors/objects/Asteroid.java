@@ -23,4 +23,5 @@ public class Asteroid extends NetworkActor
             move(1);
         }
     }
+    
 }
