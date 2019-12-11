@@ -27,13 +27,14 @@ public class WeaponsView extends GameView
         super(client, state);
 		energy = 0;
 		fireDelay = 10;
-		this.cooldown = null;
+        this.cooldown = new Cooldown(0);
     }
 
     public void act()
     {
         if (this.cooldown != null)
         {
+            this.cooldown.updateCooldown(convertEnergyToSecs(this.energy));
             this.cooldown.run();
             if(this.cooldown.isCooldownDone())
             {
@@ -41,6 +42,11 @@ public class WeaponsView extends GameView
             }
         }
 
+    }
+
+    private double convertEnergyToSecs(int energy)
+    {
+        return (100 - energy) * .1 + .5;
     }
 
 
@@ -81,6 +87,7 @@ class Cooldown
 
     public Cooldown(int cooldownSec)
     {
+        // Seconds * 60 frames
         this.cooldownSec = cooldownSec * 60;
         this.counter = 0;
     }
@@ -91,6 +98,13 @@ class Cooldown
         {
             counter++;
         }
+    }
+
+
+    public void updateCooldown(double secs)
+    {
+        this.counter = (int) Math.round(counter * (secs * 60 / this.cooldownSec)) ;
+        this.cooldownSec = (int) secs * 60;
     }
 
     public boolean isCooldownDone()
