@@ -1,6 +1,5 @@
 package org.rrhs.asteroids.network.serverActions;
 
-import com.sun.xml.internal.bind.v2.runtime.reflect.Lister;
 import org.rrhs.asteroids.actors.NetworkActor;
 import org.rrhs.asteroids.network.Packet;
 import org.rrhs.asteroids.network.Server;
