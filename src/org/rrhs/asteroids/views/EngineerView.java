@@ -7,6 +7,7 @@ import org.rrhs.asteroids.actors.data.ShipData;
 import org.rrhs.asteroids.actors.ui.PowerBar;
 import org.rrhs.asteroids.network.Client;
 import org.rrhs.asteroids.util.MayflowerUtils;
+import org.rrhs.asteroids.util.logging.Logger;
 import org.rrhs.asteroids.util.ui.WrappableSelector;
 
 import java.awt.*;
@@ -90,7 +91,7 @@ public final class EngineerView extends GameView
         if (MayflowerUtils.wasKeyPressed(KEY_UP))
         {
             final System system = System.atIndex(selector.get());
-            allocator.allocate(system, 10);
+            if (!allocator.allocate(system, 10)) flashBackground();
             updatePercentages();
         }
 
@@ -98,9 +99,25 @@ public final class EngineerView extends GameView
         if (MayflowerUtils.wasKeyPressed(KEY_DOWN))
         {
             final System system = System.atIndex(selector.get());
-            allocator.deallocate(system, 10);
+            if (!allocator.deallocate(system, 10)) flashBackground();
             updatePercentages();
         }
+    }
+
+    private void flashBackground()
+    {
+        new Thread(() -> {
+            try
+            {
+                MayflowerUtils.setBackgroundColor(this, new Color(80, 80, 80));
+                Thread.sleep(50L);
+                MayflowerUtils.setBackgroundColor(this, Color.BLACK);
+            }
+            catch (InterruptedException e)
+            {
+                Logger.error(e + ": Warning flash thread was interrupted");
+            }
+        }).start();
     }
 
     private void updateSelected()
@@ -175,16 +192,15 @@ public final class EngineerView extends GameView
      */
     private class PowerAllocator
     {
+        private static final int DEFAULT_RESERVE = 10;
         private Map<System, Integer> allocations = new EnumMap<>(System.class);
 
         public PowerAllocator()
         {
-            // Default allocation scheme is 100% divided
-            // between all systems with remainder in reserve
             for (System system : System.values())
             {
-                if (system == System.RESERVE) allocations.put(system, 100 % (System.values().length - 1));
-                else allocations.put(system, 100 / (System.values().length - 1));
+                if (system == System.RESERVE) allocations.put(system, DEFAULT_RESERVE);
+                else allocations.put(system, (100 - DEFAULT_RESERVE) / (System.values().length - 1));
             }
         }
 
@@ -195,18 +211,22 @@ public final class EngineerView extends GameView
          *
          * @param system System to allocate power to. Cannot be {@link System#RESERVE RESERVE}.
          * @param amount Amount of power to allocate
+         * @return true if the full amount was allocated, otherwise false
          */
-        private void allocate(final System system, final int amount)
+        private boolean allocate(final System system, final int amount)
         {
+            boolean r = true;
             if (system == System.RESERVE) throw new IllegalArgumentException();
             final int current = allocations.get(system);
             final int delta = MayflowerUtils.clamp(amount, 0, allocations.get(System.RESERVE));
             final int vNew = current + delta;
             final int rNew = allocations.get(System.RESERVE) - delta;
+            if (delta < amount) r = false;
 
             allocations.put(system, vNew);
             allocations.put(System.RESERVE, rNew);
             barMap.get(system).setPercentage(vNew);
+            return r;
         }
 
         /**
@@ -216,18 +236,22 @@ public final class EngineerView extends GameView
          *
          * @param system System to return power from. Cannot be {@link System#RESERVE RESERVE}.
          * @param amount Amount of power to return
+         * @return true if the full amount was deallocated, otherwise false
          */
-        private void deallocate(final System system, final int amount)
+        private boolean deallocate(final System system, final int amount)
         {
+            boolean r = true;
             if (system == System.RESERVE) throw new IllegalArgumentException();
             final int current = allocations.get(system);
             final int delta = MayflowerUtils.clamp(amount, 0, current);
             final int vNew = current - delta;
             final int rNew = allocations.get(System.RESERVE) + delta;
+            if (delta < amount) r = false;
 
             allocations.put(system, vNew);
             allocations.put(System.RESERVE, rNew);
             barMap.get(system).setPercentage(vNew);
+            return r;
         }
 
         /**
@@ -237,12 +261,13 @@ public final class EngineerView extends GameView
          *
          * @param system System to adjust. Cannot be {@link System#RESERVE RESERVE}.
          * @param value  Percent power to set
+         * @return true if the full amount was allocated, otherwise false
          */
-        private void set(final System system, final int value)
+        private boolean set(final System system, final int value)
         {
             if (system == System.RESERVE) throw new IllegalArgumentException();
             final int diff = (value - allocations.get(system));
-            allocate(system, diff);
+            return allocate(system, diff);
         }
 
         /**
