@@ -1,20 +1,16 @@
 package org.rrhs.asteroids.views;
 
-import mayflower.Actor;
 import mayflower.Color;
-import mayflower.Mayflower;
 import org.rrhs.asteroids.GameState;
 import org.rrhs.asteroids.RunnerOffline;
-import org.rrhs.asteroids.actors.objects.Selector;
 import org.rrhs.asteroids.actors.data.ShipData;
 import org.rrhs.asteroids.actors.ui.PowerBar;
 import org.rrhs.asteroids.network.Client;
 import org.rrhs.asteroids.util.MayflowerUtils;
+import org.rrhs.asteroids.util.ui.WrappableSelector;
 
-import java.util.Arrays;
-import java.util.EnumMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.awt.*;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -23,78 +19,122 @@ import static mayflower.Keyboard.*;
 
 public final class EngineerView extends GameView
 {
+    private static final String FONT_NAME_DEFAULT = "Segoe UI";
+    private static final int FONT_SIZE_DEFAULT = 18;
+
     private final Map<System, PowerBar> barMap;
+    private final Map<PowerBar, Point> textPositions = new HashMap<>();
     private final PowerAllocator allocator = new PowerAllocator();
-    private Actor selector = new Selector();
-    private int selected = 0;  // Currently selected column
-    private int[] selectorX = {-35,155,341,526};
-    private int indexS = 0;
+    private final WrappableSelector selector = new WrappableSelector(1, System.values().length - 1);
+
     public EngineerView(Client client, GameState state)
     {
         super(client, state);
 
-        // Set background color
+        // Set background color and default font
         MayflowerUtils.setBackgroundColor(this, Color.BLACK);
-        this.setFont("Calibri", 24);
+        this.setFont(FONT_NAME_DEFAULT, FONT_SIZE_DEFAULT);
 
         // Initialize PowerBar list
-        Iterator<System> iSystems = Arrays.stream(System.values()).iterator();
+        final Iterator<System> iSystems = Arrays.stream(System.values()).iterator();
         barMap = Stream.generate(PowerBar::new)
-                .limit(4L)
-                .collect(Collectors.toMap(ignore -> iSystems.next(), bar -> bar));
+                .limit(System.values().length)
+                .collect(Collectors.toMap(__ -> iSystems.next(), bar -> bar));
 
         // Add power bars to world
-        final int padding = 50;
-        final int delta = (getWidth() + 10 - (2 * padding)) / barMap.size();
-        AtomicInteger i = new AtomicInteger(0);
-        barMap.forEach((system, bar) -> {
-            int xOffset = padding + (delta * (i.getAndIncrement()));
-            this.addObject(bar, xOffset + padding, padding);
-            this.showText(system.name, xOffset + padding, (2 * padding) + bar.getHeight(), new Color(102, 255, 102));
-            bar.setPercentage(allocator.getCurrent(system));
+        final int padding = 60;                                                 // Padding from edge
+        final int spacing = ((getWidth() + 10) - (2 * padding)) / barMap.size();  // Spacing between power bars
+        final AtomicInteger i = new AtomicInteger(0);                // Current iteration index
+        Arrays.stream(System.values()).forEach(system -> {
+            // Bar
+            PowerBar bar = barMap.get(system);
+            int xOffset = padding + (spacing * (i.getAndIncrement()));
+            this.addObject(bar, xOffset, (2 * padding));
+
+            // Initial label positions
+            textPositions.put(bar, new Point(xOffset, (3 * padding) + bar.getHeight()));
         });
 
-        // Add selector to world
-        this.addObject(selector, -35, 0);
+        updatePercentages();
+        updateSelected();
     }
 
     protected void update()
     {
+        processInput();
+
         final ShipData data = new ShipData(allocator.getCurrent(System.PILOT),
                 allocator.getCurrent(System.WEAPONS),
                 allocator.getCurrent(System.SENSORS));
         // TODO: actual networking code -- I guess we need to merge networking changes?
+    }
 
-        if(!Mayflower.wasKeyDown(KEY_LEFT) && Mayflower.isKeyDown(KEY_LEFT)){
-
-            if(indexS == 0){
-                indexS = 3;
-            }
-            else{
-                indexS-=1;
-            }
-
-            selector.setLocation(selectorX[indexS],0);
-
+    private void processInput()
+    {
+        /// Power bar interactions
+        // Move selector left
+        if (MayflowerUtils.wasKeyPressed(KEY_LEFT))
+        {
+            selector.decrement();
+            updateSelected();
         }
-        else if(!Mayflower.wasKeyDown(KEY_RIGHT) && Mayflower.isKeyDown(KEY_RIGHT)){
-            if(indexS == 3){
-                indexS = 0;
-            }
-            else{
-                indexS+=1;
-            }
-            selector.setLocation(selectorX[indexS],0);
-            Mayflower.delay(10);
+
+        // Move selector right
+        if (MayflowerUtils.wasKeyPressed(KEY_RIGHT))
+        {
+            selector.increment();
+            updateSelected();
+        }
+
+        // Increase selection
+        if (MayflowerUtils.wasKeyPressed(KEY_UP))
+        {
+            final System system = System.atIndex(selector.get());
+            allocator.allocate(system, 10);
+            updatePercentages();
+        }
+
+        // Decrease selection
+        if (MayflowerUtils.wasKeyPressed(KEY_DOWN))
+        {
+            final System system = System.atIndex(selector.get());
+            allocator.deallocate(system, 10);
+            updatePercentages();
         }
     }
 
-    /**
-     * Get the amount of power currently allocated to a {@link System}.
-     */
-    public int getCurrentPower(final System system)
+    private void updateSelected()
     {
-        return allocator.getCurrent(system);
+        barMap.values().forEach(PowerBar::deselect);
+        final System system = System.atIndex(selector.get());     // Currently selected system
+        final PowerBar bar = barMap.get(system);                  // Currently selected bar
+        bar.select();
+        updateLabels();
+    }
+
+    private void updatePercentages()
+    {
+        for (System system : System.values())
+        {
+            barMap.get(system).setPercentage(allocator.getCurrent(system));
+        }
+        updateLabels();
+    }
+
+    private void updateLabels()
+    {
+        barMap.keySet().forEach(system -> {
+            // Get parent bar
+            final PowerBar bar = barMap.get(system);
+
+            // Get text position and remove old text
+            final Point labelPos = textPositions.get(bar);
+            this.removeText(labelPos.x, labelPos.y);
+
+            // Update text
+            final String text = system.name + " (" + allocator.getCurrent(system) + "%)";
+            this.showText(text, labelPos.x, labelPos.y, bar.getColor());
+        });
     }
 
     /**
@@ -104,30 +144,47 @@ public final class EngineerView extends GameView
      */
     public enum System
     {
-        RESERVE,
-        PILOT,
-        WEAPONS,
-        SENSORS;
+        RESERVE(0),
+        PILOT(1),
+        WEAPONS(2),
+        SENSORS(3);
 
+        private final int index;
         private final String name;
 
-        System()
+        System(final int index)
         {
+            this.index = index;
             this.name = name().charAt(0) + name().substring(1).toLowerCase();
+        }
+
+        public static System atIndex(int index)
+        {
+            Optional<System> opt = Arrays.stream(System.values())
+                    .filter(system -> system.index == index)
+                    .limit(1)
+                    .findFirst();
+            if (opt.isPresent()) return opt.get();
+            else throw new IllegalArgumentException("No System with the specified index exists.");
         }
     }
 
+    /**
+     * A utility class used for managing power
+     * allocations between Systems.
+     */
     private class PowerAllocator
     {
-        private int reserve = 1;
         private Map<System, Integer> allocations = new EnumMap<>(System.class);
 
         public PowerAllocator()
         {
+            // Default allocation scheme is 100% divided
+            // between all systems with remainder in reserve
             for (System system : System.values())
             {
-                if (system == System.RESERVE) allocations.put(system, 1);
-                else allocations.put(system, 33);
+                if (system == System.RESERVE) allocations.put(system, 100 % (System.values().length - 1));
+                else allocations.put(system, 100 / (System.values().length - 1));
             }
         }
 
@@ -143,12 +200,13 @@ public final class EngineerView extends GameView
         {
             if (system == System.RESERVE) throw new IllegalArgumentException();
             final int current = allocations.get(system);
-            final int delta = MayflowerUtils.clamp(amount, 0, reserve);
+            final int delta = MayflowerUtils.clamp(amount, 0, allocations.get(System.RESERVE));
             final int vNew = current + delta;
+            final int rNew = allocations.get(System.RESERVE) - delta;
 
             allocations.put(system, vNew);
+            allocations.put(System.RESERVE, rNew);
             barMap.get(system).setPercentage(vNew);
-            reserve -= delta;
         }
 
         /**
@@ -165,10 +223,11 @@ public final class EngineerView extends GameView
             final int current = allocations.get(system);
             final int delta = MayflowerUtils.clamp(amount, 0, current);
             final int vNew = current - delta;
+            final int rNew = allocations.get(System.RESERVE) + delta;
 
             allocations.put(system, vNew);
+            allocations.put(System.RESERVE, rNew);
             barMap.get(system).setPercentage(vNew);
-            reserve += delta;
         }
 
         /**
