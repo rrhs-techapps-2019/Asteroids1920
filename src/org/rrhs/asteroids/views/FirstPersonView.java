@@ -18,6 +18,7 @@ public abstract class FirstPersonView extends GameView {
     private static final int INIT_CACHE_SIZE = 8;
     private static final int FOCAL_LENGTH = 20;
     private static final double UNITS_TO_PIXELS = 0.1;
+    private static final double SPRITE_SCALE = 1.0;
 
     public FirstPersonView(Client client, GameState gameState) {
         super(client, gameState);
@@ -41,7 +42,7 @@ public abstract class FirstPersonView extends GameView {
         int xo = 5;
         int yo = 0;
         int asteroidX = getAsteroidX(xo, yo);
-        int scale = Math.min((int) (getScaleFactor(xo, yo) * 64), 1000);
+        double scale = Math.min(getScaleFactor(xo, yo) * 64, 1000);
         System.out.println("rot: " + testRot + " deg, asteroidx: " + asteroidX + ", scale: " + scale);
 
         //MayflowerImage img = new MayflowerImage("img/Asteroid.png");
@@ -56,6 +57,9 @@ public abstract class FirstPersonView extends GameView {
         double rot = Math.toRadians(calculateRotation());
         double x = ((double) trueX)*Math.cos(rot) - ((double) trueY)*Math.sin(rot);
         double y = ((double) trueY)*Math.cos(rot) + ((double) trueX)*Math.sin(rot);
+	if(y <= 0) {
+	    return Integer.MIN_VALUE;
+	}
         System.out.println(x + ", " + y);
 
         return (int)((getWidth()/2.0) + FOCAL_LENGTH*(x/y)*UNITS_TO_PIXELS);
@@ -67,8 +71,9 @@ public abstract class FirstPersonView extends GameView {
         double x = ((double) trueX)*Math.cos(rot) - ((double) trueY)*Math.sin(rot);
         double y = ((double) trueY)*Math.cos(rot) + ((double) trueX)*Math.sin(rot);
 
-        return Math.sqrt((Math.pow(FOCAL_LENGTH*x/y, 2.0) + Math.pow(FOCAL_LENGTH, 2.0))
-                /(Math.pow(x, 2.0) + Math.pow(y, 2.0)));
+        //return Math.sqrt((Math.pow(FOCAL_LENGTH*x/y, 2.0) + Math.pow(FOCAL_LENGTH, 2.0))
+                ///(Math.pow(x, 2.0) + Math.pow(y, 2.0)));
+        return SPRITE_SCALE/(Math.pow(x, 2.0) + Math.pow(y, 2.0));
     }
 
     //pilot: returns ship rotation
