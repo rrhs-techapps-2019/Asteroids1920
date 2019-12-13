@@ -26,7 +26,7 @@ public class Packet {
     public Packet(String action, NetworkActor actor) {
         this.action = action;
         this.actor = actor.toString();
-        this.action = actor.getType();
+        this.type = actor.getType();
         this.data = null;
     }
     public Packet(String action, String actor, String data) {
@@ -60,6 +60,6 @@ public class Packet {
     public String getData() { return data; }
 
     public String toString() {
-        return actor + "--==--" + action + "--==--" + data;
+        return action + "--==--" + actor + "--==--" + data;
     }
 }

@@ -64,7 +64,8 @@ public class Server extends mayflower.net.Server {
         String action = packet.getAction();
 
         String type, direction;
-        actions.get(packet.actor).act(this, id, packet);
+        if (actions.containsKey(packet.type))
+            actions.get(packet.type).act(this, id, packet);
     }
 
     /**

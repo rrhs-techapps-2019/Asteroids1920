@@ -18,9 +18,11 @@ public class MessageHandler {
         String[] parser = message.split("--==--");
         System.out.println("arraything is " + Arrays.toString(parser));
         if (parser.length == 2)
-            return new Packet(parser[1], parser[0]);
+            return new Packet(parser[0], parser[1]);
+        else if (parser.length == 3 && !parser[1].equals("null"))
+            return new Packet(parser[0], parser[1], parser[2]);
         else if (parser.length == 3)
-            return new Packet(parser[2], parser[0], parser[1]);
+            return new Packet(parser[0]);
         return null;
     }
 
@@ -31,6 +33,7 @@ public class MessageHandler {
         System.out.println("message is: " + message);
         String[] pairs = message.split(", ");
         for (String p : pairs) {
+            System.out.println("<><>" + p);
             String[] kv = p.split("=");
             ret.put(kv[0], kv[1]);
         }
