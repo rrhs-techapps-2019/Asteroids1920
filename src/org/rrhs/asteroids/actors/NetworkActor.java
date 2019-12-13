@@ -58,17 +58,6 @@ public class NetworkActor extends Actor {
         ++tick;
     }
 
-    public String toString() {
-        Map<String, String> data = new HashMap<>();
-        data.put("type", type);
-        data.put("id", "" + id);
-        data.put("x", "" + getX());
-        data.put("y", "" + getY());
-        data.put("rotation", "" + getRotation());
-        data.put("speed", "" + getSpeed());
-        data.put("rotspeed", "" + getRotationSpeed());
-        return data.toString();
-    }
 
     public void setLocation(double x, double y) {
         super.setLocation(x, y);
@@ -110,4 +99,17 @@ public class NetworkActor extends Actor {
             this.y = y;
         }
     }
+
+    public String toString() {
+        Map<String, String> data = new HashMap<>();
+        data.put("type", type);
+        data.put("id", "" + id);
+        data.put("x", "" + getX());
+        data.put("y", "" + getY());
+        data.put("rotation", "" + getRotation());
+        data.put("speed", "" + getSpeed());
+        data.put("rotspeed", "" + getRotationSpeed());
+        return data.toString();
+    }
+
 }

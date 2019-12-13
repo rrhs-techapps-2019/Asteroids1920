@@ -65,9 +65,7 @@ public class GameView extends World
                 if ("ship".equals(nActor.getType()))
                 {
                     actor = new Ship(id);
-                }
-                else
-                {
+                } else {
                     actor = new Asteroid(id);
                 }
                 addObject(actor, nActor.getX(), nActor.getY());

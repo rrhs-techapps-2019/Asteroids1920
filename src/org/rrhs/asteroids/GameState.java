@@ -88,7 +88,6 @@ public class GameState
 
     public void addUpdate(String update)
     {
-        System.out.println("update>>" + update);
         updates.add(update);
     }
 
