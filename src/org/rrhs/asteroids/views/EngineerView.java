@@ -9,6 +9,7 @@ import org.rrhs.asteroids.network.Client;
 import org.rrhs.asteroids.util.MayflowerUtils;
 import org.rrhs.asteroids.util.logging.Logger;
 import org.rrhs.asteroids.util.ui.WrappableSelector;
+import mayflower.Mayflower;
 import mayflower.Label;
 import java.awt.*;
 import java.util.*;
@@ -91,20 +92,20 @@ public final class EngineerView extends GameView
         }
 
         // Increase selection
-        if (MayflowerUtils.wasKeyPressed(KEY_UP))
+        if (Mayflower.isKeyDown(KEY_UP))
         {
             final System system = System.atIndex(selector.get());
-            if (!allocator.allocate(system, 10)) flashBackground();
+            if (!allocator.allocate(system, 1)) flashBackground();
             updatePercentages();
             this.showReserveError(false);
 
         }
 
         // Decrease selection
-        if (MayflowerUtils.wasKeyPressed(KEY_DOWN))
+        if (Mayflower.isKeyDown(KEY_DOWN))
         {
             final System system = System.atIndex(selector.get());
-            if (!allocator.deallocate(system, 10)) flashBackground();
+            if (!allocator.deallocate(system, 1)) flashBackground();
             updatePercentages();
             this.showReserveError(false);
         }
