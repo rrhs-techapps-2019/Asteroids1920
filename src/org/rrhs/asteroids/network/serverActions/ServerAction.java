@@ -4,6 +4,6 @@ import org.rrhs.asteroids.network.Server;
 
 import java.util.Map;
 
-public interface NetworkAction {
+public interface ServerAction {
     public void act(Server server, int clientID, Packet packet);
 }

@@ -60,6 +60,7 @@ public class NetworkActor extends Actor {
 
     public String toString() {
         Map<String, String> data = new HashMap<>();
+        data.put("type", type);
         data.put("id", "" + id);
         data.put("x", "" + getX());
         data.put("y", "" + getY());

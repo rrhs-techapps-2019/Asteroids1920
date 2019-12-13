@@ -6,10 +6,7 @@ import org.rrhs.asteroids.actors.objects.Ship;
 import org.rrhs.asteroids.network.MessageHandler;
 import org.rrhs.asteroids.network.Packet;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.Queue;
+import java.util.*;
 
 public class GameState
 {
@@ -48,11 +45,14 @@ public class GameState
         for (int i = 0; i < numUpdates(); i++)
         {
             Packet update = messageParser.parseMessage(getNextUpdate());
-
+            System.out.println(update.getData());
             String[] parts = update.getData().split(" ");
+            if (parts[0] != null) continue;
+            if (parts[0].equals("disconnect")) continue;
+            System.out.println(Arrays.toString(parts));
             String action = parts[0];
 
-            String type = parts[1];
+            String type = parts[2];
             int id = Integer.parseInt(parts[2]);
             int x = Integer.parseInt(parts[3]);
             int y = Integer.parseInt(parts[4]);

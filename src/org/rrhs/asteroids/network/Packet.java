@@ -6,6 +6,7 @@ public class Packet {
     String actor;
     String action;
     String data;
+    String type;
 
     public Packet(String action, NetworkActor actor, String data) {
         this.action = action;
@@ -25,11 +26,14 @@ public class Packet {
     public Packet(String action, NetworkActor actor) {
         this.action = action;
         this.actor = actor.toString();
+        this.action = actor.getType();
         this.data = null;
     }
     public Packet(String action, String actor, String data) {
+        MessageHandler messageParser = new MessageHandler();
         this.action = action;
         this.actor = actor;
+        this.type = messageParser.actorComprehension(actor).getType();
         this.data = data;
     }
 

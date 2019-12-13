@@ -4,10 +4,9 @@ import org.rrhs.asteroids.actors.NetworkActor;
 import org.rrhs.asteroids.network.Packet;
 import org.rrhs.asteroids.network.Server;
 
-import java.util.HashMap;
 import java.util.Map;
 
-public class UpdateAllAction implements NetworkAction {
+public class UpdateAllAction implements ServerAction {
 
     public void act(Server server, int clientID, Packet packet) {
         Map<Integer, NetworkActor> actors = server.getActors();

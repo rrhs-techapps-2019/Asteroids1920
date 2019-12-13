@@ -4,10 +4,7 @@ import org.rrhs.asteroids.actors.NetworkActor;
 import org.rrhs.asteroids.network.Packet;
 import org.rrhs.asteroids.network.Server;
 
-import java.util.HashMap;
-import java.util.Map;
-
-public class StopShipAction implements NetworkAction {
+public class StopShipAction implements ServerAction {
     @Override
     public void act(Server server, int clientID, Packet packet) {
         String action = packet.getAction();

@@ -33,6 +33,7 @@ public class Client extends mayflower.net.Client
         Packet packet = messageHandler.parseMessage(message);
         System.out.println("Process: " + message);
         System.out.println(packet);
+        if (packet == null) return;
         state.addUpdate(packet.toString());
     }
 
