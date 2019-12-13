@@ -69,7 +69,11 @@ public class Server extends mayflower.net.Server
         laser.setSpeed(5);
         actors.put(laser.getId(), laser);
         System.out.println(laser);
-        send("add laser" + laser);
+        HashMap<String, String> messageToSend = new HashMap<>();
+        messageToSend.put("action", "add");
+        messageToSend.put("type", laser.getType());
+        messageToSend.put("actor", laser.toString());
+        send(messageToSend.toString());
     }
 
     /**
