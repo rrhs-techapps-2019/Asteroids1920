@@ -1,17 +1,17 @@
 package org.rrhs.asteroids.network.actions;
 
 import org.rrhs.asteroids.actors.NetworkActor;
+import org.rrhs.asteroids.network.Packet;
 import org.rrhs.asteroids.network.Server;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class TurnTurretAction implements NetworkAction {
+public class TurnTurretAction implements ServerAction {
     @Override
-    public void act(Server server, int clientID, Map<String, String> parsedMessage) {
-        Map<String, String> messageToSend = new HashMap<>();
+    public void act(Server server, int clientID, Packet packet) {
         NetworkActor turret = server.getTurret();
-        String direction = parsedMessage.get("direction");
+        String direction = packet.getData();
         if ("left".equals(direction))
         {
             turret.setRotationSpeed(-1);
@@ -19,10 +19,8 @@ public class TurnTurretAction implements NetworkAction {
         {
             turret.setRotationSpeed(1);
         }
-        messageToSend.put("action", "update");
-        messageToSend.put("type", "turret");
-        messageToSend.put("actor", turret.toString());
-        server.send(messageToSend.toString());
+        Packet p = new Packet("update", turret);
+        server.send(p.toString());
 
     }
 }
