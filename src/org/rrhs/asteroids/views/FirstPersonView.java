@@ -17,14 +17,13 @@ public abstract class FirstPersonView extends GameView {
     private double testCounter;
 
     private static final int INIT_CACHE_SIZE = 8;
-    private static final int FOCAL_LENGTH = 30;
-    private static final double UNITS_TO_PIXELS = 0.1;
-    private static final double SPRITE_SCALE = 30;
+    private static final int FOV_ANGLE = 120; // Measured in degrees
+    private static final double SPRITE_SCALE = 600;
 
     public FirstPersonView(Client client, GameState gameState) {
         super(client, gameState);
         testRot = 0;
-        testCounter = 0.01;
+        testCounter = 50;
         this.gameState = gameState;
         this.asteroidMap = new HashMap<>();
         this.asteroidCache = new ArrayList<>(INIT_CACHE_SIZE);
@@ -42,43 +41,51 @@ public abstract class FirstPersonView extends GameView {
     public void act() {
         testRot = (testRot + 1) % 360;
         //testRot = 0;
-        //testCounter += 0.1;
+        //testRot = 0;
+        testCounter -= 0.1;
 
-        double xo = 5;
-        double yo = 2;
+        double xo = testCounter;
+        double yo = 0;
         int asteroidX = getAsteroidX(xo, yo);
-        System.out.println(xo);
+        System.out.println(testCounter);
         double scale = Math.min(getScaleFactor(xo, yo) * 64, 1000);
         System.out.println("rot: " + testRot + " deg, asteroidx: " + asteroidX + ", scale: " + scale);
 
         MayflowerImage img = new MayflowerImage("img/Asteroid.png");
         img.scale((int) scale, (int) scale);
         fpaa.setImage(img);
-        //fpaa.getImage().scale(scale, scale);
         fpaa.setLocation(asteroidX - (fpaa.getImage().getWidth() / 2), getWidth() / 2 - (fpaa.getImage().getHeight() / 2));
     }
 
     //returns the x-coordinate of an asteroid's sprite on the SSQ
     public int getAsteroidX(double trueX, double trueY) {
-        double rot = Math.toRadians(calculateRotation());
+        /*double rot = Math.toRadians(90 - calculateRotation());
         double x = (trueX)*Math.cos(rot) - (trueY)*Math.sin(rot);
         double y = (trueY)*Math.cos(rot) + (trueX)*Math.sin(rot);
 
         if(y <= 0) {
             return Integer.MIN_VALUE;
-        }
-        //System.out.println(x + ", " + y);
+        }*/
 
-        return (int)((getWidth()/2.0) + FOCAL_LENGTH*(x/y)*UNITS_TO_PIXELS);
+        //return (int)((getWidth()/2.0) + FOCAL_LENGTH*(x/y)*UNITS_TO_PIXELS);
+
+        double θ = calculateRotation();
+        double relativeY = (trueY)*Math.cos(θ) + (trueX)*Math.sin(θ);
+
+        if (relativeY <= 0) {
+            //return Integer.MAX_VALUE;
+        }
+
+        double φ = Math.atan(trueY / trueX);
+        double ρ = FOV_ANGLE;
+        double μωμ = 0.5;
+        double x = getWidth() * (((θ - φ) / ρ) - μωμ);
+        return (int) x;
     }
 
     //returns the factor by which the asteroid sprite should be scaled for the perspective view
-    public double getScaleFactor(double trueX, double trueY) {
-        double rot = Math.toRadians(calculateRotation());
-        double x = (trueX)*Math.cos(rot) - (trueY)*Math.sin(rot);
-        double y = (trueY)*Math.cos(rot) + (trueX)*Math.sin(rot);
-
-        return SPRITE_SCALE/Math.sqrt(Math.pow(x, 2.0) + Math.pow(y, 2.0));
+    public double getScaleFactor(double x, double y) {
+        return SPRITE_SCALE/(Math.sqrt(Math.pow(x, 2.0) + Math.pow(y, 2.0)) * FOV_ANGLE);
     }
 
     //pilot: returns ship rotation
