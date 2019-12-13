@@ -9,7 +9,7 @@ import org.rrhs.asteroids.network.Client;
 import org.rrhs.asteroids.util.MayflowerUtils;
 import org.rrhs.asteroids.util.logging.Logger;
 import org.rrhs.asteroids.util.ui.WrappableSelector;
-
+import mayflower.Label;
 import java.awt.*;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -31,6 +31,8 @@ public final class EngineerView extends GameView
     public EngineerView(Client client, GameState state)
     {
         super(client, state);
+        this.showReserveError(false);
+
 
         // Set background color and default font
         MayflowerUtils.setBackgroundColor(this, Color.BLACK);
@@ -68,6 +70,7 @@ public final class EngineerView extends GameView
                 allocator.getCurrent(System.WEAPONS),
                 allocator.getCurrent(System.SENSORS));
         // TODO: actual networking code -- I guess we need to merge networking changes?
+
     }
 
     private void processInput()
@@ -93,6 +96,8 @@ public final class EngineerView extends GameView
             final System system = System.atIndex(selector.get());
             if (!allocator.allocate(system, 10)) flashBackground();
             updatePercentages();
+            this.showReserveError(false);
+
         }
 
         // Decrease selection
@@ -101,6 +106,7 @@ public final class EngineerView extends GameView
             final System system = System.atIndex(selector.get());
             if (!allocator.deallocate(system, 10)) flashBackground();
             updatePercentages();
+            this.showReserveError(false);
         }
     }
 
@@ -112,12 +118,25 @@ public final class EngineerView extends GameView
                 MayflowerUtils.setBackgroundColor(this, new Color(80, 80, 80));
                 Thread.sleep(50L);
                 MayflowerUtils.setBackgroundColor(this, Color.BLACK);
+                this.showReserveError(true);
+
             }
             catch (InterruptedException e)
             {
                 Logger.error(e + ": Warning flash thread was interrupted");
             }
         }).start();
+
+
+    }
+    //Displays error if an illegal power allocation takes place
+    private void showReserveError(boolean bool){
+        if(bool){
+            this.showText("Not enough reserve power!", 270, 25, new Color(255,255,255));
+        }
+        else{
+            this.showText("Not enough reserve power!", 270, 25, new Color(0,0,0));
+        }
     }
 
     private void updateSelected()
