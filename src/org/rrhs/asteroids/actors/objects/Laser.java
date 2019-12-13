@@ -2,10 +2,8 @@ package org.rrhs.asteroids.actors.objects;
 
 import mayflower.Actor;
 import mayflower.MayflowerImage;
-import mayflower.World;
 import org.rrhs.asteroids.actors.NetworkActor;
-
-import java.util.List;
+import org.rrhs.asteroids.network.ServerWorld;
 
 public class Laser extends NetworkActor {
     public Laser(int id) {
@@ -13,42 +11,41 @@ public class Laser extends NetworkActor {
         MayflowerImage img = new MayflowerImage("img/Laser.png");
         img.scale(.2);
         setImage(img);
+        // doubles speed?
+        this.speed = speed + speed;
     }
 
-
-    public void act()
-    {
-        super.act();
-    }
 //chekcs if toutching Astroid or Ededge of screen and removes its self
-    public void update() {
-        List<Actor> touching = getIntersectingObjects(Actor.class);
+    public void act() {
+        super.act();
+
+        Actor[] touching = getTouching();
 
         for (Actor laser : touching) {
-            if (touching instanceof AsteroidBig)
+            if (laser touching instanceof AsteroidBig)
             {
-                World w = getWorld();
+                ServerWorld w = getServerWorld();
 
-                w.removeObject(this);
+                w.removeActor(this);
             }
-            if (touching instanceof AsteroidSmall)
+            if (lazer touching instanceof AsteroidSmall)
             {
-                World w = getWorld();
+                ServerWorld w = getServerWorld();
 
-                w.removeObject(this);
-            }
-        }
-
-
-
-
-
-            while (isAtEdge()) {
-                World w = getWorld();
-                w.removeObject(this);
+                w.removeActor(this);
             }
         }
     }
 
+    {
+        super.act();
+
+        while (isAtEdge())
+        {
+            ServerWorld w = getServerWorld();
+            w.removeActor(this);
+        }
+    }
+}
 
 
