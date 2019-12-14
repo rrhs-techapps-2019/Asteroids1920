@@ -4,7 +4,8 @@ import mayflower.World;
 import org.rrhs.asteroids.actors.objects.Asteroid;
 import org.rrhs.asteroids.actors.NetworkActor;
 import org.rrhs.asteroids.actors.objects.Ship;
-import org.rrhs.asteroids.network.actions.NetworkAction;
+import org.rrhs.asteroids.network.serverActions.MoveShipAction;
+import org.rrhs.asteroids.network.serverActions.ServerAction;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,7 +17,7 @@ public class Server extends mayflower.net.Server
     private Map<Integer, NetworkActor> actors;
     private int nextActorId;
     private MessageHandler messageHandler;
-    private Map<String, NetworkAction> actions;
+    private Map<String, ServerAction> actions;
 
     public Server(World world)
     {
@@ -33,6 +34,10 @@ public class Server extends mayflower.net.Server
         addAsteroid(10, 10, 10, 1);
         addAsteroid(600, 200, -100, 1);
         System.out.println("Server started...");
+
+        // instantiate your NetworkActions here! //
+        addNetworkAction("moveship", MoveShipAction.class);
+        //    end NetworkAction instantiation    //
     }
 
     public void addAsteroid(int x, int y, int direction, int speed)
@@ -43,11 +48,8 @@ public class Server extends mayflower.net.Server
         asteroid.setSpeed(speed);
         actors.put(asteroid.getId(), asteroid);
         System.out.println(asteroid);
-        HashMap<String, String> messageToSend = new HashMap<>();
-        messageToSend.put("action", "add");
-        messageToSend.put("type", asteroid.getType());
-        messageToSend.put("actor", asteroid.toString());
-        send(messageToSend.toString());
+        Packet p = new Packet("add", asteroid);
+        send(p.toString());
     }
 
     /**
@@ -58,16 +60,16 @@ public class Server extends mayflower.net.Server
      */
     public void process(int id, String message)
     {
-        Map<String, String> parsedMessage = messageHandler.parseMessage(message);
+        Packet packet = messageHandler.parseMessage(message);
 
         System.out.println("Process (" + id + "): " + message);
 
         String[] parts = message.split(" ");
-        String action = parts[0];
+        String action = packet.getAction();
 
         String type, direction;
-        Map<String, String> messageToSend = new HashMap<>();
-        actions.get(parsedMessage.get("action")).act(this, id, parsedMessage);
+        if (actions.containsKey(packet.type))
+            actions.get(packet.type).act(this, id, packet);
     }
 
     /**
@@ -81,12 +83,33 @@ public class Server extends mayflower.net.Server
 
         for (NetworkActor actor : actors.values())
         {
-            send(id, "add " + actor.getType() + " " + actor);
+            Packet p = new Packet("add", actor);
+            System.out.println(">>" + p.toString());
+            send(id, p.toString());
         }
     }
 
-    public boolean addNetworkAction(String type, NetworkAction action) {
-        actions.put(type, action);
+    /**
+     * @param action        the action occurring i.e. "update"
+     * @param networkAction the networkAction that will have act() called
+     * @return true, eventually the status of the action.
+     */
+    public boolean addNetworkAction(String action, Class<? extends ServerAction> networkAction)
+    {
+        ServerAction actionInstance = null;
+        try
+        {
+            actionInstance = networkAction.newInstance();
+        }
+        catch (InstantiationException e)
+        {
+            e.printStackTrace();
+        }
+        catch (IllegalAccessException e)
+        {
+            e.printStackTrace();
+        }
+        actions.put(action, actionInstance);
         return true;
     }
 

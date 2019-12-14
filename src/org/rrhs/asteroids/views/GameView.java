@@ -9,6 +9,7 @@ import org.rrhs.asteroids.actors.objects.Asteroid;
 import org.rrhs.asteroids.actors.NetworkActor;
 import org.rrhs.asteroids.actors.objects.Ship;
 import org.rrhs.asteroids.network.Client;
+import org.rrhs.asteroids.network.Packet;
 import org.rrhs.asteroids.util.MayflowerUtils;
 import org.rrhs.asteroids.util.NetworkUtils.Message;
 
@@ -47,7 +48,8 @@ public class GameView extends World
         resyncCounter++;
         if (resyncCounter > 30)
         {
-            client.send(Message.UPDATE);
+            Packet p = new Packet("update");
+            client.send(p.toString());
             resyncCounter = 0;
         }
     }
@@ -84,37 +86,50 @@ public class GameView extends World
         // force server update
         if (MayflowerUtils.wasKeyPressed(Keyboard.KEY_SPACE))
         {
-            client.send(Message.UPDATE);
+            Packet p = new Packet("update");
+            client.send(p.toString());
         }
 
         // move forward
         if (MayflowerUtils.wasKeyPressed(Keyboard.KEY_UP))
         {
-            client.send(Message.START_MOVE);
+            Packet p = new Packet("move");
+            client.send(p.toString());
+
         }
         else if (MayflowerUtils.wasKeyReleased(Keyboard.KEY_UP))
         {
-            client.send(Message.STOP_MOVE);
+            Packet p = new Packet("stop");
+            client.send(p.toString());
+
         }
 
         // turn left
         if (MayflowerUtils.wasKeyPressed(Keyboard.KEY_LEFT))
         {
-            client.send(Message.START_TURN_LEFT);
+            Packet p = new Packet("left");
+            client.send(p.toString());
+
         }
         else if (MayflowerUtils.wasKeyReleased(Keyboard.KEY_LEFT))
         {
-            client.send(Message.STOP_TURN);
+            Packet p = new Packet("stop_turn");
+            client.send(p.toString());
+
         }
 
         // turn right
         if (MayflowerUtils.wasKeyPressed(Keyboard.KEY_RIGHT))
         {
-            client.send(Message.START_TURN_RIGHT);
+            Packet p = new Packet("right");
+            client.send(p.toString());
+
         }
         else if (MayflowerUtils.wasKeyReleased(Keyboard.KEY_RIGHT))
         {
-            client.send(Message.STOP_TURN);
+            Packet p = new Packet("stop_turn");
+            client.send(p.toString());
+
         }
     }
 }

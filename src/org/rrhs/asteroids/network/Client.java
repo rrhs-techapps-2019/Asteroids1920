@@ -30,9 +30,11 @@ public class Client extends mayflower.net.Client
      */
     public void process(String message)
     {
-        Map<String, String> parsedMessage = messageHandler.parseMessage(message);
+        Packet packet = messageHandler.parseMessage(message);
         System.out.println("Process: " + message);
-        state.addUpdate(message);
+        System.out.println(packet);
+        if (packet == null) return;
+        state.addUpdate(packet.toString());
     }
 
     /**
