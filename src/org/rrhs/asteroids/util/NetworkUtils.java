@@ -23,6 +23,10 @@ public final class NetworkUtils
         TYPE_MAP.put("asteroid", Asteroid.class);
     }
 
+    private NetworkUtils()
+    {
+    }
+
     public static Map<String, Integer> reconstituteMap(String raw)
     {
         return reconstituteMap(raw, Integer::parseInt);
@@ -76,9 +80,5 @@ public final class NetworkUtils
         actor.setRotation(data.get("rotation"));
         actor.setSpeed(data.get("speed"));
         actor.setRotationSpeed(data.get("rotspeed"));
-    }
-
-    private NetworkUtils()
-    {
     }
 }

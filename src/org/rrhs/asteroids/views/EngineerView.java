@@ -1,6 +1,7 @@
 package org.rrhs.asteroids.views;
 
 import mayflower.Color;
+import mayflower.Mayflower;
 import org.rrhs.asteroids.GameState;
 import org.rrhs.asteroids.RunnerOffline;
 import org.rrhs.asteroids.actors.data.ShipData;
@@ -9,8 +10,7 @@ import org.rrhs.asteroids.network.Client;
 import org.rrhs.asteroids.util.MayflowerUtils;
 import org.rrhs.asteroids.util.logging.Logger;
 import org.rrhs.asteroids.util.ui.WrappableSelector;
-import mayflower.Mayflower;
-import mayflower.Label;
+
 import java.awt.*;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -61,6 +61,14 @@ public final class EngineerView extends GameView
 
         updatePercentages();
         updateSelected();
+    }
+
+    /**
+     * Offline test
+     */
+    public static void main(String[] args)
+    {
+        new RunnerOffline(EngineerView.class);
     }
 
     protected void update()
@@ -130,13 +138,17 @@ public final class EngineerView extends GameView
 
 
     }
+
     //Displays error if an illegal power allocation takes place
-    private void showReserveError(boolean bool){
-        if(bool){
-            this.showText("Not enough reserve power!", 270, 25, new Color(255,255,255));
+    private void showReserveError(boolean bool)
+    {
+        if (bool)
+        {
+            this.showText("Not enough reserve power!", 270, 25, new Color(255, 255, 255));
         }
-        else{
-            this.showText("Not enough reserve power!", 270, 25, new Color(0,0,0));
+        else
+        {
+            this.showText("Not enough reserve power!", 270, 25, new Color(0, 0, 0));
         }
     }
 
@@ -297,13 +309,5 @@ public final class EngineerView extends GameView
         {
             return allocations.get(system);
         }
-    }
-
-    /**
-     * Offline test
-     */
-    public static void main(String[] args)
-    {
-        new RunnerOffline(EngineerView.class);
     }
 }
