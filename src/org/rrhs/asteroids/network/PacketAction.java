@@ -9,7 +9,8 @@ public enum PacketAction
     MOVE,
     STOP,
     TURN,
-    STOP_TURN;
+    STOP_TURN,
+    POWER;
 
     public static PacketAction fromString(String action)
     {

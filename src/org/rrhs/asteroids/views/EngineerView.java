@@ -3,12 +3,18 @@ package org.rrhs.asteroids.views;
 import mayflower.Color;
 import mayflower.Mayflower;
 import org.rrhs.asteroids.GameState;
-import org.rrhs.asteroids.RunnerOffline;
-import org.rrhs.asteroids.actors.data.ShipData;
+import org.rrhs.asteroids.RunnerClient;
+import org.rrhs.asteroids.System;
+import org.rrhs.asteroids.actors.data.PowerData;
 import org.rrhs.asteroids.actors.ui.PowerBar;
 import org.rrhs.asteroids.network.Client;
+import org.rrhs.asteroids.network.Packet;
+import org.rrhs.asteroids.network.PacketAction;
 import org.rrhs.asteroids.util.MayflowerUtils;
+import org.rrhs.asteroids.util.logging.LogLevel;
 import org.rrhs.asteroids.util.logging.Logger;
+import org.rrhs.asteroids.util.logging.LoggerConfigurator;
+import org.rrhs.asteroids.util.logging.writers.ConsoleWriter;
 import org.rrhs.asteroids.util.ui.WrappableSelector;
 
 import java.awt.*;
@@ -63,23 +69,9 @@ public final class EngineerView extends GameView
         updateSelected();
     }
 
-    /**
-     * Offline test
-     */
-    public static void main(String[] args)
-    {
-        new RunnerOffline(EngineerView.class);
-    }
-
     protected void update()
     {
         processInput();
-
-        final ShipData data = new ShipData(allocator.getCurrent(System.PILOT),
-                allocator.getCurrent(System.WEAPONS),
-                allocator.getCurrent(System.SENSORS));
-        // TODO: actual networking code -- I guess we need to merge networking changes?
-
     }
 
     private void processInput()
@@ -168,6 +160,7 @@ public final class EngineerView extends GameView
             barMap.get(system).setPercentage(allocator.getCurrent(system));
         }
         updateLabels();
+        updateNetwork();
     }
 
     private void updateLabels()
@@ -181,41 +174,16 @@ public final class EngineerView extends GameView
             this.removeText(labelPos.x, labelPos.y);
 
             // Update text
-            final String text = system.name + " (" + allocator.getCurrent(system) + "%)";
+            final String text = system.getName() + " (" + allocator.getCurrent(system) + "%)";
             this.showText(text, labelPos.x, labelPos.y, bar.getColor());
         });
     }
 
-    /**
-     * One of three systems that power can be allocated to.<br>
-     * Note that while reserve power is considered a system internally,
-     * it cannot be used in PowerAllocator methods.
-     */
-    public enum System
+    private void updateNetwork()
     {
-        RESERVE(0),
-        PILOT(1),
-        WEAPONS(2),
-        SENSORS(3);
-
-        private final int index;
-        private final String name;
-
-        System(final int index)
-        {
-            this.index = index;
-            this.name = name().charAt(0) + name().substring(1).toLowerCase();
-        }
-
-        public static System atIndex(int index)
-        {
-            Optional<System> opt = Arrays.stream(System.values())
-                    .filter(system -> system.index == index)
-                    .limit(1)
-                    .findFirst();
-            if (opt.isPresent()) return opt.get();
-            else throw new IllegalArgumentException("No System with the specified index exists.");
-        }
+        PowerData data = new PowerData(allocator.getAllocations());
+        Packet packet = new Packet(PacketAction.POWER, data);
+        client.send(packet);
     }
 
     /**
@@ -287,27 +255,25 @@ public final class EngineerView extends GameView
         }
 
         /**
-         * Set the power currently allocated to a system.<br>
-         * If there is not enough reserve power available for the desired value,
-         * all of the power available in reserve will be allocated to the system.
-         *
-         * @param system System to adjust. Cannot be {@link System#RESERVE RESERVE}.
-         * @param value  Percent power to set
-         * @return true if the full amount was allocated, otherwise false
-         */
-        private boolean set(final System system, final int value)
-        {
-            if (system == System.RESERVE) throw new IllegalArgumentException();
-            final int diff = (value - allocations.get(system));
-            return allocate(system, diff);
-        }
-
-        /**
          * Get the amount of power currently allocated to a {@link System}.
          */
         private int getCurrent(final System system)
         {
             return allocations.get(system);
         }
+
+        public Map<System, Integer> getAllocations()
+        {
+            return Collections.unmodifiableMap(allocations);
+        }
+    }
+
+    public static void main(String[] args)
+    {
+        LoggerConfigurator.empty()
+                .addWriter(new ConsoleWriter(java.lang.System.out))
+                .level(LogLevel.DEBUG)
+                .activate();
+        new RunnerClient(EngineerView.class);
     }
 }
