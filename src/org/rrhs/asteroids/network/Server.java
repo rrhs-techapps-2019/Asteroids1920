@@ -1,11 +1,11 @@
 package org.rrhs.asteroids.network;
 
 import mayflower.World;
-import org.rrhs.asteroids.actors.objects.Asteroid;
 import org.rrhs.asteroids.actors.NetworkActor;
+import org.rrhs.asteroids.actors.objects.Asteroid;
 import org.rrhs.asteroids.actors.objects.Ship;
-import org.rrhs.asteroids.network.serverActions.MoveShipAction;
-import org.rrhs.asteroids.network.serverActions.ServerAction;
+import org.rrhs.asteroids.network.actions.server.*;
+import org.rrhs.asteroids.util.logging.Logger;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,43 +13,48 @@ import java.util.Map;
 public class Server extends mayflower.net.Server
 {
     private World world;
-    private Ship ship;
-    private Map<Integer, NetworkActor> actors;
-    private int nextActorId;
-    private MessageHandler messageHandler;
-    private Map<String, ServerAction> actions;
+    private Ship ship = new Ship(0);
+    private ActionManager<ServerAction> actionManager = new ActionManager<>();
+    private Map<Integer, NetworkActor> actors = new HashMap<>(); // ID -> actor map
+    private int nextActorId = 1;                                 // Next new actor ID in sequence
 
     public Server(World world)
     {
         super(8080);
-        actors = new HashMap<>();
-        nextActorId = 1;
         this.world = world;
-        ship = new Ship(0);
+
+        // Drop the ship into the center of the world
         actors.put(ship.getId(), ship);
-        messageHandler = new MessageHandler();
-        actions = new HashMap<>();
         world.addObject(ship, world.getWidth() / 2, world.getHeight() / 2);
 
+        // Add initial asteroids
         addAsteroid(10, 10, 10, 1);
         addAsteroid(600, 200, -100, 1);
-        System.out.println("Server started...");
 
         // instantiate your NetworkActions here! //
-        addNetworkAction("moveship", MoveShipAction.class);
+        actionManager.put(PacketAction.UPDATE, UpdateAllAction.class);
+        actionManager.put(PacketAction.MOVE, MoveAction.class);
+        actionManager.put(PacketAction.STOP, StopMoveAction.class);
+        actionManager.put(PacketAction.TURN, TurnAction.class);
+        actionManager.put(PacketAction.STOP_TURN, StopTurnAction.class);
         //    end NetworkAction instantiation    //
+
+        Logger.info("Server started.");
     }
 
     public void addAsteroid(int x, int y, int direction, int speed)
     {
+        // Add asteroid to world
         Asteroid asteroid = new Asteroid(nextActorId++);
         world.addObject(asteroid, x, y);
         asteroid.setRotation(direction);
         asteroid.setSpeed(speed);
+
+        // Save ID and send to clients
         actors.put(asteroid.getId(), asteroid);
-        System.out.println(asteroid);
-        Packet p = new Packet("add", asteroid);
-        send(p.toString());
+        Logger.debug(asteroid);
+        Packet p = new Packet(PacketAction.ADD, asteroid);
+        send(p);
     }
 
     /**
@@ -60,16 +65,10 @@ public class Server extends mayflower.net.Server
      */
     public void process(int id, String message)
     {
-        Packet packet = messageHandler.parseMessage(message);
-
-        System.out.println("Process (" + id + "): " + message);
-
-        String[] parts = message.split(" ");
-        String action = packet.getAction();
-
-        String type, direction;
-        if (actions.containsKey(packet.type))
-            actions.get(packet.type).act(this, id, packet);
+        Packet packet = new Packet(message);
+        Logger.debug("Process (" + id + "): " + message);
+        ServerAction action = actionManager.get(packet.getAction());
+        action.act(this, id, packet);
     }
 
     /**
@@ -79,38 +78,14 @@ public class Server extends mayflower.net.Server
      */
     public void onJoin(int id)
     {
-        System.out.println("Joined: " + id);
+        Logger.info("Client joined: ID " + id);
 
         for (NetworkActor actor : actors.values())
         {
-            Packet p = new Packet("add", actor);
-            System.out.println(">>" + p.toString());
-            send(id, p.toString());
+            Packet p = new Packet(PacketAction.ADD, actor);
+            Logger.debug("Sending actor " + actor.getId() + " -- " + p.toString());
+            send(id, p);
         }
-    }
-
-    /**
-     * @param action        the action occurring i.e. "update"
-     * @param networkAction the networkAction that will have act() called
-     * @return true, eventually the status of the action.
-     */
-    public boolean addNetworkAction(String action, Class<? extends ServerAction> networkAction)
-    {
-        ServerAction actionInstance = null;
-        try
-        {
-            actionInstance = networkAction.newInstance();
-        }
-        catch (InstantiationException e)
-        {
-            e.printStackTrace();
-        }
-        catch (IllegalAccessException e)
-        {
-            e.printStackTrace();
-        }
-        actions.put(action, actionInstance);
-        return true;
     }
 
     /**
@@ -120,14 +95,26 @@ public class Server extends mayflower.net.Server
      */
     public void onExit(int id)
     {
-        System.out.println("Disconnected: " + id);
+        Logger.info("Client disconnected: ID " + id);
     }
 
-    public Map<Integer, NetworkActor> getActors() {
+    public Map<Integer, NetworkActor> getActors()
+    {
         return actors;
     }
 
-    public NetworkActor getShip() {
+    public NetworkActor getShip()
+    {
         return ship;
+    }
+
+    public void send(Packet message)
+    {
+        super.send(message.toString());
+    }
+
+    public void send(int id, Packet message)
+    {
+        super.send(id, message.toString());
     }
 }

@@ -1,29 +1,30 @@
 package org.rrhs.asteroids;
 
-import org.rrhs.asteroids.actors.objects.Asteroid;
 import org.rrhs.asteroids.actors.NetworkActor;
-import org.rrhs.asteroids.actors.objects.Ship;
-import org.rrhs.asteroids.network.MessageHandler;
+import org.rrhs.asteroids.network.ActionManager;
 import org.rrhs.asteroids.network.Packet;
+import org.rrhs.asteroids.network.PacketAction;
+import org.rrhs.asteroids.network.actions.client.AddActorAction;
+import org.rrhs.asteroids.network.actions.client.ClientAction;
+import org.rrhs.asteroids.network.actions.client.UpdateActorAction;
 
 import java.util.*;
 
+/**
+ * Manages updates and actor IDs.
+ */
 public class GameState
 {
-    private Queue<String> updates;
-    private Map<Integer, NetworkActor> actors;
-    MessageHandler messageParser = new MessageHandler();
+    private final ActionManager<ClientAction> actionManager = new ActionManager<>();
+    private final Queue<String> updates = new LinkedList<>();           // Updates queued for next frame
+    private final Map<Integer, NetworkActor> actors = new HashMap<>();  // ID -> NetworkActor map
 
     public GameState()
     {
-        updates = new LinkedList<>();
-        actors = new HashMap<>();
-    }
-
-
-    public NetworkActor[] getActors()
-    {
-        return actors.values().toArray(new NetworkActor[]{});
+        //  Add your ClientActions here!  //
+        actionManager.put(PacketAction.ADD, AddActorAction.class);
+        actionManager.put(PacketAction.UPDATE, UpdateActorAction.class);
+        // End ClientAction instantiation //
     }
 
     public void act()
@@ -42,58 +43,33 @@ public class GameState
 
     private void processUpdates()
     {
-        for (int i = 0; i < numUpdates(); i++)
+        for (int i = 0; i < updates.size(); i++)
         {
-            Packet update = messageParser.parseMessage(getNextUpdate());
-            System.out.println(update.getData());
-            String[] parts = update.getData().split(" ");
-            if (parts[0] != null) continue;
-            if (parts[0].equals("disconnect")) continue;
-            System.out.println(Arrays.toString(parts));
-            String action = parts[0];
+            Packet packet = new Packet(updates.remove());
 
-            String type = parts[2];
-            int id = Integer.parseInt(parts[2]);
-            int x = Integer.parseInt(parts[3]);
-            int y = Integer.parseInt(parts[4]);
-            int rot = Integer.parseInt(parts[5]);
-            int speed = Integer.parseInt(parts[6]);
-            int rotationSpeed = Integer.parseInt(parts[7]);
-
-            NetworkActor actor = actors.get(id);
-
-            if (null == actor)
-            {
-                if ("ship".equals(type))
-                {
-                    actor = new Ship(id);
-                } else
-                {
-                    actor = new Asteroid(id);
-                }
-
-                actors.put(id, actor);
-            }
-            actor.setLocation(x, y);
-            actor.setRotation(rot);
-            actor.setSpeed(speed);
-            actor.setRotationSpeed(rotationSpeed);
+            // Get action and type
+            ClientAction action = actionManager.get(packet.getAction());
+            action.act(this, packet);
         }
-    }
-
-    public String getNextUpdate()
-    {
-        return updates.remove();
     }
 
     public void addUpdate(String update)
     {
-        System.out.println("update>>" + update);
         updates.add(update);
     }
 
-    public int numUpdates()
+    public void addActor(int id, NetworkActor actor)
     {
-        return updates.size();
+        actors.put(id, actor);
+    }
+
+    public Collection<NetworkActor> getActors()
+    {
+        return Collections.unmodifiableCollection(actors.values());
+    }
+
+    public NetworkActor getActor(int id)
+    {
+        return actors.get(id);
     }
 }

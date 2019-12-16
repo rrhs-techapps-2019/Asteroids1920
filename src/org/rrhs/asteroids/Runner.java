@@ -27,7 +27,7 @@ public class Runner
                 @Override
                 public void init()
                 {
-                    Runner.this.init();
+                    Runner.this.init(headless);
                 }
             };
         }
@@ -38,15 +38,15 @@ public class Runner
                 @Override
                 public void init()
                 {
-                    Runner.this.init();
+                    Runner.this.init(headless);
                 }
             };
         }
     }
 
-    protected void init()
+    protected void init(boolean headless)
     {
-        Logger.info("Mayflower initialized successfully.");
+        Logger.info("Mayflower initialized successfully. (headless=" + headless + ")");
     }
 
     protected void initClient(final Object... args)

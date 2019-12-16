@@ -2,89 +2,75 @@ package org.rrhs.asteroids.network;
 
 import org.rrhs.asteroids.actors.NetworkActor;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 public class Packet
 {
-    String actor;
-    String action;
-    String data;
-    String type;
+    private Map<String, String> fields = new LinkedHashMap<>();
 
-    public Packet(String action, NetworkActor actor, String data)
+    /**
+     * Construct a Packet with the specified action and actor data
+     */
+    public Packet(PacketAction action, NetworkActor actor)
     {
-        this.action = action;
-        this.actor = actor.toString();
-        this.data = data;
+        populateFields(action.toString(), actor.toString(), actor.getType());
     }
 
-    public Packet(String action)
+    /**
+     * Construct a Packet with the specified action
+     */
+    public Packet(PacketAction action)
     {
-        this.action = action;
-        this.actor = null;
-        this.data = null;
+        populateFields(action.toString(), null, null);
     }
 
-    public Packet(String action, String data)
+    /**
+     * Construct a Packet with the specified action and type
+     */
+    public Packet(PacketAction action, String type)
     {
-        this.action = action;
-        this.actor = null;
-        this.data = data;
+        populateFields(action.toString(), null, type);
     }
 
-    public Packet(String action, NetworkActor actor)
+    /**
+     * Reconstruct a Packet from a raw network message
+     */
+    public Packet(String message)
     {
-        this.action = action;
-        this.actor = actor.toString();
-        this.type = actor.getType();
-        this.data = null;
-    }
-
-    public Packet(String action, String actor, String data)
-    {
-        MessageHandler messageParser = new MessageHandler();
-        this.action = action;
-        this.actor = actor;
-        this.type = messageParser.actorComprehension(actor).getType();
-        this.data = data;
-    }
-
-    public String setData(String data)
-    {
-        String ret = this.data;
-        this.data = data;
-        return ret;
-    }
-
-    public String setActor(NetworkActor actor)
-    {
-        String ret = this.actor;
-        this.actor = actor.toString();
-        return ret;
-    }
-
-    public String setAction(String action)
-    {
-        String ret = this.action;
-        this.action = action;
-        return ret;
-    }
-
-    public String getActor()
-    {
-        return actor;
-    }
-
-    public String getAction()
-    {
-        return action;
+        this.fields = Stream.of(message.split(":", 3))
+                .map(pair -> pair.split("=", 2))
+                .collect(Collectors.toMap(kv -> kv[0], kv -> kv[1]));
     }
 
     public String getData()
     {
-        return data;
+        return fields.get("data");
+    }
+
+    public String getAction()
+    {
+        return fields.get("action");
+    }
+
+    public String getType()
+    {
+        return fields.get("type");
     }
 
     public String toString()
     {
-        return action + "--==--" + actor + "--==--" + data;
+        return fields.entrySet().stream()
+                .map(entry -> entry.getKey() + "=" + entry.getValue())
+                .collect(Collectors.joining(":"));
+    }
+
+    private void populateFields(String action, String data, String type)
+    {
+        fields.put("action", action);
+        fields.put("data", data);
+        fields.put("type", type);
     }
 }

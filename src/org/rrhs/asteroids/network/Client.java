@@ -1,16 +1,12 @@
 package org.rrhs.asteroids.network;
 
 import org.rrhs.asteroids.GameState;
-import org.rrhs.asteroids.util.NetworkUtils;
 import org.rrhs.asteroids.util.logging.Logger;
-
-import java.util.Map;
 
 public class Client extends mayflower.net.Client
 {
     private boolean connected = false;
     private GameState state;
-    private MessageHandler messageHandler;
 
     public Client(GameState state)
     {
@@ -30,10 +26,9 @@ public class Client extends mayflower.net.Client
      */
     public void process(String message)
     {
-        Packet packet = messageHandler.parseMessage(message);
-        System.out.println("Process: " + message);
-        System.out.println(packet);
-        if (packet == null) return;
+        Packet packet = new Packet(message);
+        Logger.debug("Process: " + message);
+        Logger.debug(packet);
         state.addUpdate(packet.toString());
     }
 
@@ -52,19 +47,8 @@ public class Client extends mayflower.net.Client
      */
     public void onConnect()
     {
-        System.out.println("Connected to server!");
+        Logger.info("Connected to server!");
         connected = true;
-    }
-
-    /**
-     * Send a predefined message to the server
-     *
-     * @param message Message to send
-     * @see org.rrhs.asteroids.util.NetworkUtils.Message
-     */
-    public void send(NetworkUtils.Message message)
-    {
-        super.send(message.getRaw());
     }
 
     /**
@@ -72,7 +56,14 @@ public class Client extends mayflower.net.Client
      */
     protected void init()
     {
-        messageHandler = new MessageHandler();
         connect("localhost", 8080);
+    }
+
+    /**
+     * Send a Packet to the server
+     */
+    public void send(Packet message)
+    {
+        super.send(message.toString());
     }
 }

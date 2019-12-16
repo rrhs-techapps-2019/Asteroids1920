@@ -70,7 +70,6 @@ public class NetworkActor extends Actor
 
     public String toString() {
         Map<String, String> data = new HashMap<>();
-        data.put("type", type);
         data.put("id", "" + id);
         data.put("x", "" + getX());
         data.put("y", "" + getY());
@@ -93,7 +92,7 @@ public class NetworkActor extends Actor
     private int getSmallest()
     {
         Set<Integer> s = locationHistory.keySet();
-        Integer[] arr = (Integer[]) s.toArray();
+        Integer[] arr = s.toArray(new Integer[0]);
         Arrays.sort(arr);
         return arr[0];
     }
