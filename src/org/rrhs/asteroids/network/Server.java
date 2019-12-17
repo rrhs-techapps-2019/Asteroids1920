@@ -41,6 +41,9 @@ public class Server extends mayflower.net.Server
         actionManager.put(PacketAction.TURN, TurnAction.class);
         actionManager.put(PacketAction.STOP_TURN, StopTurnAction.class);
         actionManager.put(PacketAction.POWER, UpdatePowerAction.class);
+        actionManager.put(PacketAction.TURRET_TURN, TurnTurretAction.class);
+        actionManager.put(PacketAction.TURRET_STOP, StopTurretAction.class);
+        actionManager.put(PacketAction.FIRE, FireLaserAction.class);
         //    end NetworkAction instantiation    //
 
         Logger.info("Server started.");

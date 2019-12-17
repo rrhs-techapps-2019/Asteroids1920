@@ -4,6 +4,8 @@ import mayflower.Keyboard;
 import mayflower.Mayflower;
 import org.rrhs.asteroids.GameState;
 import org.rrhs.asteroids.network.Client;
+import org.rrhs.asteroids.network.Packet;
+import org.rrhs.asteroids.network.PacketAction;
 
 public class WeaponsView extends GameView {
     //To DO:
@@ -49,7 +51,7 @@ public class WeaponsView extends GameView {
 
         if (cooldown != null && Mayflower.isKeyDown(Keyboard.KEY_SPACE) && !Mayflower.wasKeyDown(Keyboard.KEY_SPACE)) {
             this.cooldown = new Cooldown(10);
-            client.send("fire");
+            client.send(PacketAction.FIRE);
 
         }
         // turn left
