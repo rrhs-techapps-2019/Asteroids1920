@@ -4,7 +4,7 @@ import mayflower.Mayflower;
 import org.rrhs.asteroids.GameState;
 import org.rrhs.asteroids.network.Client;
 
-public class WeaponsView extends GameView
+public class WeaponsView extends FirstPersonView
 {
     //To DO:
     // [ ] Make A Small White Line That Will Delete itself after 10 seconds
