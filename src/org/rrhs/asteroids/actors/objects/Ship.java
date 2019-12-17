@@ -5,6 +5,7 @@ import mayflower.Keyboard;
 import mayflower.Mayflower;
 import mayflower.MayflowerImage;
 import org.rrhs.asteroids.actors.NetworkActor;
+import org.rrhs.asteroids.util.MayflowerUtils;
 
 public class Ship extends NetworkActor
 {
@@ -38,41 +39,21 @@ public class Ship extends NetworkActor
         return false;
     }
 
-
-    public void move()
-    {
-        move();
-    }
-
-    public void turn()
-    {
-        act();
-    }
-
-    public void main(String[] args)
-    {
-        update();
-
-    }
-
     public int rotate()
     {
-        if (Mayflower.isKeyDown(Keyboard.KEY_LEFT) && !Mayflower.wasKeyDown(Keyboard.KEY_LEFT))
+        if (MayflowerUtils.wasKeyPressed(Keyboard.KEY_LEFT))
         {
             this.turn(-getRotationSpeed());
             return 1;
-        } else if (!Mayflower.isKeyDown(Keyboard.KEY_LEFT) && Mayflower.wasKeyDown(Keyboard.KEY_LEFT))
+        } else if (MayflowerUtils.wasKeyReleased(Keyboard.KEY_LEFT))
         {
 
         }
-        if (Mayflower.isKeyDown(Keyboard.KEY_RIGHT) && !Mayflower.wasKeyDown(Keyboard.KEY_RIGHT))
+
+        if (MayflowerUtils.wasKeyPressed(Keyboard.KEY_RIGHT))
         {
             this.turn(getRotationSpeed());
             return 1;
-        }
-        if (!Mayflower.isKeyDown(Keyboard.KEY_RIGHT) && Mayflower.wasKeyDown(Keyboard.KEY_RIGHT))
-        {
-
         }
         return 0;
     }

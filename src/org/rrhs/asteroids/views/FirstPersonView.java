@@ -40,6 +40,10 @@ public abstract class FirstPersonView extends GameView
             NetworkActor networkData = entry.getKey();
             FPAsteroidActor actor = entry.getValue();
 
+            // TODO: remove placeholder variables!
+            double shipXGoesHere = Double.MIN_VALUE;
+            double shipYGoesHere = Double.MIN_VALUE;
+
             double xo = networkData.getX() - shipXGoesHere;
             double yo = networkData.getY() - shipYGoesHere;
 
@@ -80,34 +84,42 @@ public abstract class FirstPersonView extends GameView
     //returns the factor by which the asteroid sprite should be scaled for the perspective view
     public double getScaleFactor(double x, double y)
     {
-        return Math.min(Math.max(0.01, SPRITE_SCALE / (Math.sqrt(Math.pow(x, 2.0) + Math.pow(y, 2.0)) * FOV_ANGLE)), 1000s);
+        return Math.min(Math.max(0.01, SPRITE_SCALE / (Math.sqrt(Math.pow(x, 2.0) + Math.pow(y, 2.0)) * FOV_ANGLE)), 1000);
     }
 
     //pilot: returns ship rotation
     //weapons: returns ship rotation + view rotation relative to ship
     //public abstract double calculateRotation();
-    public double calculateRotation() {
+    public double calculateRotation()
+    {
         return testRot;
     }
 
-    class SpaceBG extends Actor {
-        public SpaceBG() {
+    class SpaceBG extends Actor
+    {
+        public SpaceBG()
+        {
             MayflowerImage m = new MayflowerImage("img/space_bg.png");
             m.scale(Mayflower.getWidth(), Mayflower.getHeight());
             setImage(m);
         }
 
-        public void act() {}
+        public void act()
+        {
+        }
     }
 
     // Wrapper for asteroid NetworkActors that can be rendered in different positions than the NetworkActor is storing //
-    class FPAsteroidActor extends Actor {
-        public FPAsteroidActor() {
+    class FPAsteroidActor extends Actor
+    {
+        public FPAsteroidActor()
+        {
             MayflowerImage img = new MayflowerImage("img/Asteroid.png");
             setImage(img);
         }
 
-        public void act() {
+        public void act()
+        {
 
         }
     }

@@ -4,4 +4,4 @@ Collaborative class project for RRHS TechApps 2019–2020. Implemented in Java 8
 Asteroids1920 is a 4-player version of Asteroids in which all players control the same ship.
 Individual players are assigned seperate roles that control different parts of the ship, e.g.:
 
-![Asteroids UI](https://coleb.me/media/ast-ui.png)
+![Asteroids UI](https://rrhs-techapps-2019.github.io/Asteroids1920/media/ast-ui.png)
