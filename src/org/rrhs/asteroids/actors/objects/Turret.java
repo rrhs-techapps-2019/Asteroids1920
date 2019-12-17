@@ -1,9 +1,10 @@
-package org.rrhs.asteroids.actors;
+package org.rrhs.asteroids.actors.objects;
 
 import mayflower.Keyboard;
 import mayflower.Mayflower;
 import mayflower.MayflowerImage;
 import mayflower.World;
+import org.rrhs.asteroids.actors.NetworkActor;
 import org.rrhs.asteroids.network.Server;
 import org.rrhs.asteroids.network.ServerWorld;
 
