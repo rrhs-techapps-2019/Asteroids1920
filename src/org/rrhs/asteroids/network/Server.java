@@ -7,6 +7,7 @@ import org.rrhs.asteroids.actors.objects.Asteroid;
 import org.rrhs.asteroids.actors.objects.Ship;
 import org.rrhs.asteroids.network.actions.server.*;
 import org.rrhs.asteroids.util.logging.Logger;
+import org.rrhs.asteroids.views.EngineerView;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,7 +16,7 @@ public class Server extends mayflower.net.Server
 {
     private World world;
     private Ship ship = new Ship(0);
-    private PowerData powerState;
+    private PowerData powerState = EngineerView.getDefaultPowerState();
     private ActionManager<ServerAction> actionManager = new ActionManager<>();
     private Map<Integer, NetworkActor> actors = new HashMap<>(); // ID -> actor map
     private int nextActorId = 1;                                 // Next new actor ID in sequence

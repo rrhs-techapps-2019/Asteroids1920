@@ -77,6 +77,32 @@ public final class EngineerView extends GameView
     private void processInput()
     {
         /// Power bar interactions
+        // Increase selection
+        if (Mayflower.isKeyDown(KEY_UP))
+        {
+            final System system = System.atIndex(selector.get());
+            if (!allocator.allocate(system, 1)) flashBackground();
+            updatePercentages();
+            this.showReserveError(false);
+            return;
+        } else if (MayflowerUtils.wasKeyReleased(KEY_UP))
+        {
+            updateNetwork();
+        }
+
+        // Decrease selection
+        if (Mayflower.isKeyDown(KEY_DOWN))
+        {
+            final System system = System.atIndex(selector.get());
+            if (!allocator.deallocate(system, 1)) flashBackground();
+            updatePercentages();
+            this.showReserveError(false);
+            return;
+        } else if (MayflowerUtils.wasKeyReleased(KEY_DOWN))
+        {
+            updateNetwork();
+        }
+
         // Move selector left
         if (MayflowerUtils.wasKeyPressed(KEY_LEFT))
         {
@@ -89,25 +115,6 @@ public final class EngineerView extends GameView
         {
             selector.increment();
             updateSelected();
-        }
-
-        // Increase selection
-        if (Mayflower.isKeyDown(KEY_UP))
-        {
-            final System system = System.atIndex(selector.get());
-            if (!allocator.allocate(system, 1)) flashBackground();
-            updatePercentages();
-            this.showReserveError(false);
-
-        }
-
-        // Decrease selection
-        if (Mayflower.isKeyDown(KEY_DOWN))
-        {
-            final System system = System.atIndex(selector.get());
-            if (!allocator.deallocate(system, 1)) flashBackground();
-            updatePercentages();
-            this.showReserveError(false);
         }
     }
 
@@ -137,8 +144,7 @@ public final class EngineerView extends GameView
         if (bool)
         {
             this.showText("Not enough reserve power!", 270, 25, new Color(255, 255, 255));
-        }
-        else
+        } else
         {
             this.showText("Not enough reserve power!", 270, 25, new Color(0, 0, 0));
         }
@@ -160,7 +166,6 @@ public final class EngineerView extends GameView
             barMap.get(system).setPercentage(allocator.getCurrent(system));
         }
         updateLabels();
-        updateNetwork();
     }
 
     private void updateLabels()
@@ -266,6 +271,12 @@ public final class EngineerView extends GameView
         {
             return Collections.unmodifiableMap(allocations);
         }
+    }
+
+    public static PowerData getDefaultPowerState()
+    {
+        int defaultAllocation = (100 - PowerAllocator.DEFAULT_RESERVE) / (System.values().length - 1);
+        return new PowerData(defaultAllocation, defaultAllocation, defaultAllocation);
     }
 
     public static void main(String[] args)
