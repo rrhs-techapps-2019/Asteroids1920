@@ -4,7 +4,9 @@ import mayflower.World;
 import org.rrhs.asteroids.actors.NetworkActor;
 import org.rrhs.asteroids.actors.data.PowerData;
 import org.rrhs.asteroids.actors.objects.Asteroid;
+import org.rrhs.asteroids.actors.objects.Laser;
 import org.rrhs.asteroids.actors.objects.Ship;
+import org.rrhs.asteroids.actors.objects.Turret;
 import org.rrhs.asteroids.network.actions.server.*;
 import org.rrhs.asteroids.util.logging.Logger;
 import org.rrhs.asteroids.views.EngineerView;
@@ -16,10 +18,11 @@ public class Server extends mayflower.net.Server
 {
     private World world;
     private Ship ship = new Ship(0);
+    private Turret turret = new Turret(1);
     private PowerData powerState = EngineerView.getDefaultPowerState();
     private ActionManager<ServerAction> actionManager = new ActionManager<>();
     private Map<Integer, NetworkActor> actors = new HashMap<>(); // ID -> actor map
-    private int nextActorId = 1;                                 // Next new actor ID in sequence
+    private int nextActorId = 2;                                 // Next new actor ID in sequence
 
     public Server(World world)
     {
@@ -29,6 +32,10 @@ public class Server extends mayflower.net.Server
         // Drop the ship into the center of the world
         actors.put(ship.getId(), ship);
         world.addObject(ship, world.getWidth() / 2, world.getHeight() / 2);
+
+        // Drop the turret on the ship
+        actors.put(turret.getId(), turret);
+        world.addObject(turret, world.getWidth() / 2, world.getHeight() / 2);
 
         // Add initial asteroids
         addAsteroid(10, 10, 10, 1);
@@ -66,17 +73,17 @@ public class Server extends mayflower.net.Server
 
     public void addLaser(int x, int y, int direction)
     {
+        // Add laser to world
         Laser laser = new Laser(nextActorId++);
-        world.addObject(laser, x ,y);
+        world.addObject(laser, x, y);
         laser.setRotation(direction);
         laser.setSpeed(5);
+
+        // Save ID and send to clients
         actors.put(laser.getId(), laser);
-        System.out.println(laser);
-        HashMap<String, String> messageToSend = new HashMap<>();
-        messageToSend.put("action", "add");
-        messageToSend.put("type", laser.getType());
-        messageToSend.put("actor", laser.toString());
-        send(messageToSend.toString());
+        Logger.debug(laser);
+        Packet p = new Packet(PacketAction.ADD, laser);
+        send(p);
     }
 
     /**
@@ -131,6 +138,11 @@ public class Server extends mayflower.net.Server
     public NetworkActor getShip()
     {
         return ship;
+    }
+
+    public NetworkActor getTurret()
+    {
+        return turret;
     }
 
     public void setPowerState(PowerData powerState)

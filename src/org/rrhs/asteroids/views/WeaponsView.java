@@ -51,50 +51,62 @@ public class WeaponsView extends GameView {
 
         if (cooldown != null && Mayflower.isKeyDown(Keyboard.KEY_SPACE) && !Mayflower.wasKeyDown(Keyboard.KEY_SPACE)) {
             this.cooldown = new Cooldown(10);
-            client.send(PacketAction.FIRE);
-
+            Packet fire = new Packet(PacketAction.FIRE);
+            client.send(fire);
         }
         // turn left
         if (Mayflower.isKeyDown(Keyboard.KEY_LEFT) && !Mayflower.wasKeyDown(Keyboard.KEY_LEFT)) {
-            client.send("turnTurret left");
+            Packet turnLeft = new Packet(PacketAction.TURRET_TURN, "left");
+            client.send(turnLeft);
         } else if (!Mayflower.isKeyDown(Keyboard.KEY_LEFT) && Mayflower.wasKeyDown(Keyboard.KEY_LEFT)) {
-            client.send("stop turnTurret");
+            Packet stop = new Packet(PacketAction.TURRET_STOP);
+            client.send(stop);
         }
 
         // turn right
-        if (Mayflower.isKeyDown(Keyboard.KEY_RIGHT) && !Mayflower.wasKeyDown(Keyboard.KEY_RIGHT)) {
+        if (Mayflower.isKeyDown(Keyboard.KEY_RIGHT) && !Mayflower.wasKeyDown(Keyboard.KEY_RIGHT))
+        {
+            Packet turnRight = new Packet(PacketAction.TURRET_TURN, "right");
+            client.send(turnRight);
             client.send("turnTurret right");
-        } else if (!Mayflower.isKeyDown(Keyboard.KEY_RIGHT) && Mayflower.wasKeyDown(Keyboard.KEY_RIGHT)) {
-            client.send("stop turnTurret");
+        } else if (!Mayflower.isKeyDown(Keyboard.KEY_RIGHT) && Mayflower.wasKeyDown(Keyboard.KEY_RIGHT))
+        {
+            Packet stop = new Packet(PacketAction.TURRET_STOP);
+            client.send(stop);
         }
 
     }
-}
 
-class Cooldown {
-    private int cooldownSec;
-    private int counter;
+    static class Cooldown
+    {
+        private int cooldownSec;
+        private int counter;
 
-    public Cooldown(int cooldownSec) {
-        // Seconds * 60 frames
-        this.cooldownSec = cooldownSec * 60;
-        this.counter = 0;
-    }
+        public Cooldown(int cooldownSec)
+        {
+            // Seconds * 60 frames
+            this.cooldownSec = cooldownSec * 60;
+            this.counter = 0;
+        }
 
-    public void run() {
-        if (counter < cooldownSec) {
-            counter++;
+        public void run()
+        {
+            if (counter < cooldownSec)
+            {
+                counter++;
+            }
+        }
+
+
+        public void updateCooldown(double secs)
+        {
+            this.counter = (int) Math.round(counter * (secs * 60 / this.cooldownSec));
+            this.cooldownSec = (int) secs * 60;
+        }
+
+        public boolean isCooldownDone()
+        {
+            return counter >= cooldownSec;
         }
     }
-
-
-    public void updateCooldown(double secs) {
-        this.counter = (int) Math.round(counter * (secs * 60 / this.cooldownSec));
-        this.cooldownSec = (int) secs * 60;
-    }
-
-    public boolean isCooldownDone() {
-        return counter >= cooldownSec;
-    }
-
 }
