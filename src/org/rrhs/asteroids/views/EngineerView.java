@@ -80,10 +80,11 @@ public final class EngineerView extends GameView
         // Increase selection
         if (Mayflower.isKeyDown(KEY_UP))
         {
-            final System system = System.atIndex(selector.get());
-            if (!allocator.allocate(system, 1)) flashBackground();
-            updatePercentages();
             this.showReserveError(false);
+            final System system = System.atIndex(selector.get());
+            if (!allocator.allocate(system, 1)) this.showReserveError(true);
+            updatePercentages();
+
             return;
         } else if (MayflowerUtils.wasKeyReleased(KEY_UP))
         {
@@ -93,10 +94,11 @@ public final class EngineerView extends GameView
         // Decrease selection
         if (Mayflower.isKeyDown(KEY_DOWN))
         {
-            final System system = System.atIndex(selector.get());
-            if (!allocator.deallocate(system, 1)) flashBackground();
-            updatePercentages();
             this.showReserveError(false);
+            final System system = System.atIndex(selector.get());
+            if (!allocator.deallocate(system, 1)) this.showReserveError(true);
+            updatePercentages();
+
             return;
         } else if (MayflowerUtils.wasKeyReleased(KEY_DOWN))
         {
