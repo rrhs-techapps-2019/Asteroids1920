@@ -22,10 +22,9 @@ public class LobbyView extends World {
         super.showText("CHOOSE YOUR POSITION",50,50);
 
         if(!wview) super.showText("WEAPONS PRESS 1",50,100);
-
-        super.showText("PILOT PRESS 2",50,150);
-        super.showText("SENSORS PRESS 3",50,200);
-        super.showText("ENGINEER PRESS 4",50,250);
+        if(!pview)super.showText("PILOT PRESS 2",50,150);
+        if(!sview)super.showText("SENSORS PRESS 3",50,200);
+        if(!eview)super.showText("ENGINEER PRESS 4",50,250);
         if(Mayflower.isKeyPressed(Keyboard.KEY_1))
         {
             super.removeText(50,100);
@@ -36,16 +35,19 @@ public class LobbyView extends World {
         {
             super.removeText(50, 150);
             super.showText("Please Hold Pilot", 50, 150);
+            pview = true;
         }
         if(Mayflower.isKeyPressed(Keyboard.KEY_3))
         {
             super.removeText(50, 200);
             super.showText("Please Hold Sensors", 50, 200);
+            sview = true;
         }
         if(Mayflower.isKeyPressed(Keyboard.KEY_4))
         {
             super.removeText(50, 250);
             super.showText("Please Hold Engineer", 50, 250);
+            eview = true;
         }
     }
     public static void main(String[] args) {
