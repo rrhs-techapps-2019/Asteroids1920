@@ -1,7 +1,7 @@
 package org.rrhs.asteroids.util;
 
-import org.rrhs.asteroids.actors.objects.Asteroid;
 import org.rrhs.asteroids.actors.NetworkActor;
+import org.rrhs.asteroids.actors.objects.Asteroid;
 import org.rrhs.asteroids.actors.objects.Ship;
 import org.rrhs.asteroids.util.logging.Logger;
 

@@ -15,8 +15,7 @@ public class TurnAction implements ServerAction
         if ("left".equals(direction))
         {
             ship.setRotationSpeed(-1);
-        }
-        else
+        } else
         {
             ship.setRotationSpeed(1);
         }

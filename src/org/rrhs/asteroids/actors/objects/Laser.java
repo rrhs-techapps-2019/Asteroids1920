@@ -4,6 +4,7 @@ import mayflower.Actor;
 import mayflower.MayflowerImage;
 import mayflower.World;
 import org.rrhs.asteroids.actors.NetworkActor;
+
 import java.util.List;
 
 public class Laser extends NetworkActor
@@ -16,7 +17,7 @@ public class Laser extends NetworkActor
         setImage(img);
     }
 
-
+    @Override
     public void act()
     {
         super.act();
@@ -42,7 +43,6 @@ public class Laser extends NetworkActor
                 w.removeObject(this);
             }
         }
-
 
         while (isAtEdge())
         {
