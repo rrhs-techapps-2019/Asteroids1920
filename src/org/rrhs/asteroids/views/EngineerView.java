@@ -96,7 +96,7 @@ public final class EngineerView extends GameView
         {
             this.showReserveError(false);
             final System system = System.atIndex(selector.get());
-            if (!allocator.deallocate(system, 1)) this.showReserveError(true);
+            if (!allocator.deallocate(system, 1)) this.showReserveError(false);
             updatePercentages();
 
             return;
