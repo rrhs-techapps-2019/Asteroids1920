@@ -4,7 +4,9 @@ import mayflower.Keyboard;
 import mayflower.Mayflower;
 import mayflower.World;
 import org.rrhs.asteroids.GameState;
+import org.rrhs.asteroids.Role;
 import org.rrhs.asteroids.RunnerOffline;
+import org.rrhs.asteroids.actors.data.RoleData;
 import org.rrhs.asteroids.network.Client;
 import org.rrhs.asteroids.network.Server;
 
@@ -33,22 +35,36 @@ public class LobbyView extends World {
             super.removeText(50, 100);
             super.showText("Please Hold Weapons", 50, 100);
             wview = true;
+            RoleData data = state.getRoleState();
+            data.isAvailable(Role.WEAPONS);
+            if(wview){
+//                Mayflower.setWorld(data);
+            }
         }
         if (Mayflower.isKeyPressed(Keyboard.KEY_2)) {
             super.removeText(50, 150);
             super.showText("Please Hold Pilot", 50, 150);
             pview = true;
+            RoleData data = state.getRoleState();
+            data.isAvailable(Role.PILOT);
         }
         if (Mayflower.isKeyPressed(Keyboard.KEY_3)) {
             super.removeText(50, 200);
             super.showText("Please Hold Sensors", 50, 200);
             sview = true;
+            RoleData data = state.getRoleState();
+            data.isAvailable(Role.SENSORS);
         }
         if (Mayflower.isKeyPressed(Keyboard.KEY_4)) {
             super.removeText(50, 250);
             super.showText("Please Hold Engineer", 50, 250);
             eview = true;
+            RoleData data = state.getRoleState();
+            data.isAvailable(Role.ENGINEER);
         }
+
+
+
     }
 
     public static void main(String[] args) {
