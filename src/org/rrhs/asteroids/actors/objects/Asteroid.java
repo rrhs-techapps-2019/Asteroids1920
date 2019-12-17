@@ -15,17 +15,18 @@ public class Asteroid extends NetworkActor
 
     public void act()
     {
-        if(this.isTouching(Ship))
+        if (this.isTouching(Ship.class))
         {
-           this.setRotation(this.getRotation()+180);
+            this.setRotation(this.getRotation() + 180);
         }
         super.act();
 
-        while (isAtEdge())
+        // TODO: fix infinite loop
+        /*while (isAtEdge())
         {
             turn(10);
             move(1);
-        }
+        }*/
         super.act();
     }
 }

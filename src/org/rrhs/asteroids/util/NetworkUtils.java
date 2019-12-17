@@ -3,6 +3,7 @@ package org.rrhs.asteroids.util;
 import org.rrhs.asteroids.actors.NetworkActor;
 import org.rrhs.asteroids.actors.objects.Asteroid;
 import org.rrhs.asteroids.actors.objects.Ship;
+import org.rrhs.asteroids.actors.objects.Turret;
 import org.rrhs.asteroids.util.logging.Logger;
 
 import java.lang.reflect.Constructor;
@@ -21,6 +22,7 @@ public final class NetworkUtils
         // I hate Java 8
         TYPE_MAP.put("ship", Ship.class);
         TYPE_MAP.put("asteroid", Asteroid.class);
+        TYPE_MAP.put("turret", Turret.class);
     }
 
     private NetworkUtils()
