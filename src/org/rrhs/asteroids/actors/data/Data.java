@@ -18,9 +18,9 @@ public class Data<K, V>
         map.put(key, value);
     }
 
-    protected void get(K key)
+    protected V get(K key)
     {
-        map.get(key);
+        return map.get(key);
     }
 
     @Override

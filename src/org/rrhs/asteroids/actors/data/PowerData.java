@@ -19,4 +19,19 @@ public class PowerData extends Data<System, Integer>
         super.put(System.WEAPONS, weapons);
         super.put(System.SENSORS, sensors);
     }
+
+    public int getPilotPower()
+    {
+        return super.get(System.PILOT);
+    }
+
+    public int getWeaponsPower()
+    {
+        return super.get(System.WEAPONS);
+    }
+
+    public int getSensorsPower()
+    {
+        return super.get(System.SENSORS);
+    }
 }
