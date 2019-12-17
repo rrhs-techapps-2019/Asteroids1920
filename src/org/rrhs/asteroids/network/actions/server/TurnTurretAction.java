@@ -5,9 +5,6 @@ import org.rrhs.asteroids.network.Packet;
 import org.rrhs.asteroids.network.PacketAction;
 import org.rrhs.asteroids.network.Server;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class TurnTurretAction implements ServerAction
 {
     @Override

@@ -30,8 +30,7 @@ public class Runner
                     Runner.this.init(headless);
                 }
             };
-        }
-        else
+        } else
         {
             this.mayflower = new Mayflower("Asteroids", 800, 600)
             {

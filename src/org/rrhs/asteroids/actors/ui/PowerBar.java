@@ -15,7 +15,7 @@ public class PowerBar extends Actor
     public static final int DEFAULT_WIDTH = 80;
     public static final int DEFAULT_HEIGHT = 300;
     private static final Color COLOR_SELECTED = new Color(200, 200, 200);
-    private static final Color COLOR_NOT_SELECTED = new Color(230,230,230);
+    private static final Color COLOR_NOT_SELECTED = new Color(230, 230, 230);
 
     private static int index = 0; // Unique index
     private final Color colorDefault;

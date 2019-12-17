@@ -5,10 +5,8 @@ import org.rrhs.asteroids.network.Packet;
 import org.rrhs.asteroids.network.PacketAction;
 import org.rrhs.asteroids.network.Server;
 
-import java.util.HashMap;
-import java.util.Map;
-
-public class StopTurretAction implements ServerAction {
+public class StopTurretAction implements ServerAction
+{
     @Override
     public void act(Server server, int clientID, Packet packet)
     {

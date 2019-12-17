@@ -28,5 +28,4 @@ public class Asteroid extends NetworkActor
         }
         super.act();
     }
-    
 }

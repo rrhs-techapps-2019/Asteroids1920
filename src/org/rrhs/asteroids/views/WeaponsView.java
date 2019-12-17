@@ -7,7 +7,8 @@ import org.rrhs.asteroids.network.Client;
 import org.rrhs.asteroids.network.Packet;
 import org.rrhs.asteroids.network.PacketAction;
 
-public class WeaponsView extends GameView {
+public class WeaponsView extends GameView
+{
     //To DO:
     // [ ] Make A Small White Line That Will Delete itself after 10 seconds
     // [ ] Move turret
@@ -21,7 +22,8 @@ public class WeaponsView extends GameView {
     private Client client;
     private Cooldown cooldown;
 
-    public WeaponsView(Client client, GameState state) {
+    public WeaponsView(Client client, GameState state)
+    {
         super(client, state);
         energy = 0;
         fireDelay = 10;
@@ -29,36 +31,43 @@ public class WeaponsView extends GameView {
     }
 
 
-
     @Override
-    public void update() {
+    public void update()
+    {
         this.energy = state.getPowerState().getWeaponsPower();
-        if (this.cooldown != null) {
+        if (this.cooldown != null)
+        {
             this.cooldown.updateCooldown(convertEnergyToSecs(this.energy));
             this.cooldown.run();
-            if (this.cooldown.isCooldownDone()) {
+            if (this.cooldown.isCooldownDone())
+            {
                 this.cooldown = null;
             }
         }
     }
 
-    private double convertEnergyToSecs(int energy) {
+    private double convertEnergyToSecs(int energy)
+    {
         return (100 - energy) * .1 + .5;
     }
 
 
-    private void processInput() {
+    private void processInput()
+    {
 
-        if (cooldown != null && Mayflower.isKeyDown(Keyboard.KEY_SPACE) && !Mayflower.wasKeyDown(Keyboard.KEY_SPACE)) {
+        if (cooldown != null && Mayflower.isKeyDown(Keyboard.KEY_SPACE) && !Mayflower.wasKeyDown(Keyboard.KEY_SPACE))
+        {
             this.cooldown = new Cooldown(10);
             Packet fire = new Packet(PacketAction.FIRE);
             client.send(fire);
         }
         // turn left
-        if (Mayflower.isKeyDown(Keyboard.KEY_LEFT) && !Mayflower.wasKeyDown(Keyboard.KEY_LEFT)) {
+        if (Mayflower.isKeyDown(Keyboard.KEY_LEFT) && !Mayflower.wasKeyDown(Keyboard.KEY_LEFT))
+        {
             Packet turnLeft = new Packet(PacketAction.TURRET_TURN, "left");
             client.send(turnLeft);
-        } else if (!Mayflower.isKeyDown(Keyboard.KEY_LEFT) && Mayflower.wasKeyDown(Keyboard.KEY_LEFT)) {
+        } else if (!Mayflower.isKeyDown(Keyboard.KEY_LEFT) && Mayflower.wasKeyDown(Keyboard.KEY_LEFT))
+        {
             Packet stop = new Packet(PacketAction.TURRET_STOP);
             client.send(stop);
         }
