@@ -1,18 +1,18 @@
 package org.rrhs.asteroids.views;
-import mayflower.*;
-import java.util.*;
 
-import org.rrhs.asteroids.actors.objects.Circle;
-import org.rrhs.asteroids.actors.objects.Asteroid;
-import org.rrhs.asteroids.actors.NetworkActor;
-import org.rrhs.asteroids.actors.objects.Ship;
-import org.rrhs.asteroids.network.MessageHandler;
-import org.rrhs.asteroids.network.Packet;
-import org.rrhs.asteroids.network.Client;
+import mayflower.MayflowerImage;
 import org.rrhs.asteroids.GameState;
 import org.rrhs.asteroids.RunnerOffline;
+import org.rrhs.asteroids.actors.NetworkActor;
+import org.rrhs.asteroids.actors.objects.Circle;
+import org.rrhs.asteroids.network.Client;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 public class Sensors extends GameView
-{ 
+{
     private ArrayList<NetworkActor> asteroids;
     private NetworkActor ship;
     private ArrayList<NetworkActor> visibleAsteroids;
@@ -21,12 +21,14 @@ public class Sensors extends GameView
     private int xCur;
     private int yCur;
     private double scaleFactor;
-    private mayflower.Timer time ;
+    private mayflower.Timer time;
     private int power;
     private Circle circle;
+
     //800 by 600 screen per person
-    public Sensors(Client client, GameState state){
-        super(client,state);
+    public Sensors(Client client, GameState state)
+    {
+        super(client, state);
         asteroids = getAsteroids();
         compareCords();
         xBase = 800;
@@ -36,202 +38,230 @@ public class Sensors extends GameView
         scaleFactor = 1.0;
         time = new mayflower.Timer(1000);
         power = 0;
-        circle= new Circle(); 
+        circle = new Circle();
         compareCords();
         createScreen();
     }
-    public static void main(String[] args){
-      new RunnerOffline(Sensors.class);
+
+    public static void main(String[] args)
+    {
+        new RunnerOffline(Sensors.class);
     }
+
     //gets list of asteroids to use later
-    public ArrayList<NetworkActor> getAsteroids(){ 
+    public ArrayList<NetworkActor> getAsteroids()
+    {
         ArrayList<NetworkActor> ret = new ArrayList<NetworkActor>();
-        NetworkActor[] actors = super.getState().getActors();
-        for(int i = actors.length -1; i>=0;i--){
-            NetworkActor n=actors[i];
-            if((n.getType().equals("asteroid"))){
+        List<NetworkActor> actors = super.getState().getActors();
+        for (int i = actors.size() - 1; i >= 0; i--)
+        {
+            NetworkActor n = actors.get(i);
+            if ((n.getType().equals("asteroid")))
+            {
                 ret.add(n);
             }
         }
         return ret;
     }
 
-    public void moveCircle(){
-        time.set(((100-power)*75)+250);  
-        if(time.isDone()){
+    public void moveCircle()
+    {
+        time.set(((100 - power) * 75) + 250);
+        if (time.isDone())
+        {
             // increase the image size of the circle 
-            
+
             MayflowerImage img = circle.getImage();
-            if(img.getHeight()>=1.2*yCur){
-            img.scale(40,40);
-        }
+            if (img.getHeight() >= 1.2 * yCur)
+            {
+                img.scale(40, 40);
+            }
             img.scale(1.2);
             circle.setImage(img);
             mayflower.Timer t = new mayflower.Timer(250);
             ArrayList<NetworkActor> added = new ArrayList<NetworkActor>();
             ArrayList<NetworkActor> asters = displayAster();
-            for(NetworkActor asteroid : asters){
-               
-                   addObject(asteroid,asteroid.getX(),asteroid.getY());
-                   added.add(asteroid);
-               
+            for (NetworkActor asteroid : asters)
+            {
+
+                addObject(asteroid, asteroid.getX(), asteroid.getY());
+                added.add(asteroid);
+
             }
-            if(t.isDone()){
-               for (NetworkActor actor: added){
-                   removeObject(actor);
+            if (t.isDone())
+            {
+                for (NetworkActor actor : added)
+                {
+                    removeObject(actor);
                 }
             }
             time.reset();
         }
     }
-public ArrayList<NetworkActor> displayAster()
+
+    public ArrayList<NetworkActor> displayAster()
     {
-      ArrayList<NetworkActor> putAster = new ArrayList<NetworkActor>();
-      ArrayList<NetworkActor> asters = new ArrayList<NetworkActor>();
-      if(ship!=null){
-      asters=getAsteroids();
-      int xCenter= ship.getX(); //center coordinates
-      int yCenter= ship.getY();
-      MayflowerImage img = circle.getImage();
-      int diameter= img.getHeight(); //length of diameter
-      int radius= diameter/2; //length of radius
-      int xLine= radius;
-      //For the second quadrant of the circle
-      for (int i=xLine; i>=0; i--) //subtracts the xLine
-      {
-        int yLine= (int)(Math.sqrt((radius*radius)-(i*i))); //gets the yLine for every xLine
-        int yCoor= yCenter+yLine;
-        int xCoor= xCenter-xLine;
-        //any asteroids in the lists have the yCoor and XCoor, display the asteroid on the screen for 1 s)
-        for(int j =asters.size(); j>0;j--)
+        ArrayList<NetworkActor> putAster = new ArrayList<NetworkActor>();
+        ArrayList<NetworkActor> asters = new ArrayList<NetworkActor>();
+        if (ship != null)
         {
-          //if(asters[j].get(x)==xCoor &&  asters[j].get(y)==yCoor)
-          if(asters.get(j).getX()==xCoor && asters.get(j).getY()==yCoor)
-          {
-            putAster.add(asters.get(j));
-          }
+            asters = getAsteroids();
+            int xCenter = ship.getX(); //center coordinates
+            int yCenter = ship.getY();
+            MayflowerImage img = circle.getImage();
+            int diameter = img.getHeight(); //length of diameter
+            int radius = diameter / 2; //length of radius
+            int xLine = radius;
+            //For the second quadrant of the circle
+            for (int i = xLine; i >= 0; i--) //subtracts the xLine
+            {
+                int yLine = (int) (Math.sqrt((radius * radius) - (i * i))); //gets the yLine for every xLine
+                int yCoor = yCenter + yLine;
+                int xCoor = xCenter - xLine;
+                //any asteroids in the lists have the yCoor and XCoor, display the asteroid on the screen for 1 s)
+                for (int j = asters.size(); j > 0; j--)
+                {
+                    //if(asters[j].get(x)==xCoor &&  asters[j].get(y)==yCoor)
+                    if (asters.get(j).getX() == xCoor && asters.get(j).getY() == yCoor)
+                    {
+                        putAster.add(asters.get(j));
+                    }
+                }
+
+            }
+            //for the third quadrant of the circle
+            for (int i = xLine; i >= 0; i--) //subtracts the xLine
+            {
+                int yLine = (int) (Math.sqrt((radius * radius) - (i * i))); //gets the yLine for every xLine
+                int yCoor = yCenter - yLine;
+                int xCoor = xCenter - xLine;
+                //any asteroids in the lists have the yCoor and XCoor, display the asteroid on the screen for 1 s)
+                for (int j = asters.size(); j > 0; j--)
+                {
+                    //if(asters[j].get(x)==xCoor &&  asters[j].get(y)==yCoor)
+                    if (asters.get(j).getX() == xCoor && asters.get(j).getY() == yCoor)
+                    {
+                        putAster.add(asters.get(j));
+                    }
+                }
+
+            }
+            //for the first quadrant of the circle
+            for (int i = 1; i <= xLine; i++) //increases to the amount of xLine form 0
+            {
+                int yLine = (int) (Math.sqrt((radius * radius) - (i * i))); //gets the yLine for every xLine
+                int yCoor = yCenter + yLine;
+                int xCoor = xCenter + i;
+                //any asteroids in the lists have the yCoor and XCoor, display the asteroid on the screen for 1 s)
+                for (int j = asters.size(); j > 0; j--)
+                {
+                    //if(asters[j].get(x)==xCoor &&  asters[j].get(y)==yCoor)
+                    if (asters.get(j).getX() == xCoor && asters.get(j).getY() == yCoor)
+                    {
+                        putAster.add(asters.get(j));
+                    }
+                }
+
+            }
+            //for the fourth quadrant of the circle
+            for (int i = 1; i <= xLine; i++) //increases to the amount of xLine form 0
+            {
+                int yLine = (int) (Math.sqrt((radius * radius) - (i * i))); //gets the yLine for every xLine
+                int yCoor = yCenter - yLine;
+                int xCoor = xCenter + i;
+                //any asteroids in the lists have the yCoor and XCoor, display the asteroid on the screen for 1 s)
+                for (int j = asters.size(); j > 0; j--)
+                {
+                    //if(asters[j].get(x)==xCoor &&  asters[j].get(y)==yCoor)
+                    if (asters.get(j).getX() == xCoor && asters.get(j).getY() == yCoor)
+                    {
+                        putAster.add(asters.get(j));
+                    }
+                }
+            }
         }
-       
-      }
-      //for the third quadrant of the circle
-      for (int i=xLine; i>=0; i--) //subtracts the xLine
-      {
-        int yLine= (int)(Math.sqrt((radius*radius)-(i*i))); //gets the yLine for every xLine
-        int yCoor= yCenter-yLine;
-        int xCoor= xCenter-xLine;
-        //any asteroids in the lists have the yCoor and XCoor, display the asteroid on the screen for 1 s)
-        for(int j =asters.size(); j>0;j--)
-        {
-          //if(asters[j].get(x)==xCoor &&  asters[j].get(y)==yCoor)
-          if(asters.get(j).getX()==xCoor && asters.get(j).getY()==yCoor)
-          {
-            putAster.add(asters.get(j));
-          }
-        }
-       
-      }
-      //for the first quadrant of the circle
-      for (int i=1; i<=xLine; i++) //increases to the amount of xLine form 0
-      {
-        int yLine= (int)(Math.sqrt((radius*radius)-(i*i))); //gets the yLine for every xLine
-        int yCoor= yCenter+yLine;
-        int xCoor= xCenter+i;
-        //any asteroids in the lists have the yCoor and XCoor, display the asteroid on the screen for 1 s)
-        for(int j =asters.size(); j>0;j--)
-        {
-          //if(asters[j].get(x)==xCoor &&  asters[j].get(y)==yCoor)
-          if(asters.get(j).getX()==xCoor && asters.get(j).getY()==yCoor)
-          {
-            putAster.add(asters.get(j));
-          }
-        }
-       
-      }
-      //for the fourth quadrant of the circle
-      for (int i=1; i<=xLine; i++) //increases to the amount of xLine form 0
-      {
-        int yLine= (int)(Math.sqrt((radius*radius)-(i*i))); //gets the yLine for every xLine
-        int yCoor= yCenter-yLine;
-        int xCoor= xCenter+i;
-        //any asteroids in the lists have the yCoor and XCoor, display the asteroid on the screen for 1 s)
-        for(int j =asters.size(); j>0;j--)
-        {
-          //if(asters[j].get(x)==xCoor &&  asters[j].get(y)==yCoor)
-          if(asters.get(j).getX()==xCoor && asters.get(j).getY()==yCoor)
-          {
-            putAster.add(asters.get(j));
-          }
-        }
-      }
-      }
-      return putAster;
+        return putAster;
     }
 
     public void act()
     {
-        super.act(); 
+        super.act();
         compareCords();
         //createScreen();
         asteroids = getAsteroids();
         moveCircle();
     }
-    //public int Screen 
+
+    //public int Screen
     //gets ship coordinates, then compares those to all asteroids
     //if an asteroid would display on the screen, it is added to a list
-    public void compareCords(){
-        NetworkActor[] actors =getState().getActors();
+    public void compareCords()
+    {
+        Collection<NetworkActor> actors = getState().getActors();
         NetworkActor s = null;
-        for (NetworkActor a:actors){
-            if(a.getType().equals("ship")){
+        for (NetworkActor a : actors)
+        {
+            if (a.getType().equals("ship"))
+            {
                 s = a;
                 break;
             }
         }
-        if(s!=null){
+        if (s != null)
+        {
             ship = s;
             int shipx = ship.getX();
             int shipy = ship.getY();
             visibleAsteroids = new ArrayList<NetworkActor>();
-            for (NetworkActor a: asteroids){
-                int xdiff = Math.abs(shipx-a.getX());
-                int ydiff = Math.abs(shipy-a.getY());
-                if(xdiff<=400&&ydiff<=300){visibleAsteroids.add(a);}
+            for (NetworkActor a : asteroids)
+            {
+                int xdiff = Math.abs(shipx - a.getX());
+                int ydiff = Math.abs(shipy - a.getY());
+                if (xdiff <= 400 && ydiff <= 300)
+                {
+                    visibleAsteroids.add(a);
+                }
             }
         }
 
     }
 
-    public void createScreen(){
+    public void createScreen()
+    {
         // for(NetworkActor asteroid : visibleAsteroids){
         // addObject(asteroid,asteroid.getX(),asteroid.getY());
         // }
-      if(ship!=null){
-        addObject(ship,ship.getX(),ship.getY());
-      }
-      if(circle!=null && ship!=null){
-        addObject(circle, ship.getX(),ship.getY());
-      }
+        if (ship != null)
+        {
+            addObject(ship, ship.getX(), ship.getY());
+        }
+        if (circle != null && ship != null)
+        {
+            addObject(circle, ship.getX(), ship.getY());
+        }
     }
-    
+
     //takes some arguememt which tells it how to alter its magnification
     //positive number moves zooms in, negative zooms out
     //zooms in and out in descrete increments, not proportional to the number input
     public void changeMagnification(int change)
     {
-      if(change>0&&scaleFactor>.2){
-        scaleFactor-=.2;
-        double x = xBase*scaleFactor;
-        double y = yBase*scaleFactor;
-        xCur = (int)x;
-        yCur = (int)y;
-      }
-      if(change<0&&scaleFactor<2){
-        scaleFactor+=.2;
-        double x = xBase*scaleFactor;
-        double y = yBase*scaleFactor;
-        xCur = (int)x;
-        yCur = (int)y;
-      }
+        if (change > 0 && scaleFactor > .2)
+        {
+            scaleFactor -= .2;
+            double x = xBase * scaleFactor;
+            double y = yBase * scaleFactor;
+            xCur = (int) x;
+            yCur = (int) y;
+        }
+        if (change < 0 && scaleFactor < 2)
+        {
+            scaleFactor += .2;
+            double x = xBase * scaleFactor;
+            double y = yBase * scaleFactor;
+            xCur = (int) x;
+            yCur = (int) y;
+        }
     }
     //800 by 600 screen per person
 

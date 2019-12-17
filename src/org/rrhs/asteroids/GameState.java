@@ -63,9 +63,9 @@ public class GameState
         actors.put(id, actor);
     }
 
-    public Collection<NetworkActor> getActors()
+    public List<NetworkActor> getActors()
     {
-        return Collections.unmodifiableCollection(actors.values());
+        return Collections.unmodifiableList(new ArrayList<>(actors.values()));
     }
 
     public NetworkActor getActor(int id)
