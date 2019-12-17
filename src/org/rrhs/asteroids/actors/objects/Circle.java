@@ -1,4 +1,7 @@
+package org.rrhs.asteroids.actors.objects;
 import mayflower.*;
+import mayflower.MayflowerImage;
+import org.rrhs.asteroids.actors.NetworkActor;
 /**
  * Write a description of class Circle here.
  *
@@ -14,7 +17,7 @@ public class Circle extends Actor
      */
     public Circle()
     {
-        MayflowerImage img = new MayflowerImage("img/circle.png");
+        MayflowerImage img = new MayflowerImage("img/Circle.png");
         img.scale(40,40);
         setImage(img);
     }
