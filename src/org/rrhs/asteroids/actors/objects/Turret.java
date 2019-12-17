@@ -22,7 +22,7 @@ public class Turret extends NetworkActor
 //        super.act();
 //        Server w = getWorld();
 //        int shipX = w.getShip.GetX();
-//        int shipY = w.ship.Gety();
+//        int shipY = w.ship.GetY();
 //    this.setLocation(shipX, shipY);
 //
 // //Might need to use thi to turn in the future, Might not need
