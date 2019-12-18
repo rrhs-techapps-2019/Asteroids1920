@@ -13,7 +13,8 @@ import org.rrhs.asteroids.views.EngineerView;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Server extends mayflower.net.Server {
+public class Server extends mayflower.net.Server
+{
     private World world;
     private Ship ship = new Ship(0);
     private RoleData roleState = new RoleData();
@@ -22,7 +23,8 @@ public class Server extends mayflower.net.Server {
     private Map<Integer, NetworkActor> actors = new HashMap<>(); // ID -> actor map
     private int nextActorId = 1;                                 // Next new actor ID in sequence
 
-    public Server(World world) {
+    public Server(World world)
+    {
         super(8080);
         this.world = world;
 
@@ -41,13 +43,15 @@ public class Server extends mayflower.net.Server {
         actionManager.put(PacketAction.TURN, TurnAction.class);
         actionManager.put(PacketAction.STOP_TURN, StopTurnAction.class);
         actionManager.put(PacketAction.POWER, UpdatePowerAction.class);
-        actionManager.put(PacketAction.CHECKOUT, CheckoutAction.class);
+        actionManager.put(PacketAction.CLAIM_ROLE, ClaimRoleAction.class);
+        actionManager.put(PacketAction.RELEASE_ROLE, ReleaseRoleAction.class);
         //    end NetworkAction instantiation    //
 
         Logger.info("Server started.");
     }
 
-    public void addAsteroid(int x, int y, int direction, int speed) {
+    public void addAsteroid(int x, int y, int direction, int speed)
+    {
         // Add asteroid to world
         Asteroid asteroid = new Asteroid(nextActorId++);
         world.addObject(asteroid, x, y);
@@ -67,7 +71,8 @@ public class Server extends mayflower.net.Server {
      * @param id      the id of the client that send the message
      * @param message the message send from the client
      */
-    public void process(int id, String message) {
+    public void process(int id, String message)
+    {
         Packet packet = new Packet(message);
         Logger.debug("Process (" + id + "): " + message);
         ServerAction action = actionManager.get(packet.getAction());
@@ -79,13 +84,26 @@ public class Server extends mayflower.net.Server {
      *
      * @param id the id of the client that just connected to the server
      */
-    public void onJoin(int id) {
+    public void onJoin(int id)
+    {
         Logger.info("Client joined: ID " + id);
 
+        /// Initial packets
+        // Client ID
+        Packet idUpdate = new Packet(PacketAction.IDENTIFY, String.valueOf(id));
+        send(id, idUpdate);
+
+        // Current power state
         Packet powerUpdate = new Packet(PacketAction.POWER, powerState);
         send(id, powerUpdate);
 
-        for (NetworkActor actor : actors.values()) {
+        // Current role state
+        Packet roleUpdate = new Packet(PacketAction.UPDATE_ROLES, roleState);
+        send(id, roleUpdate);
+
+        // Current actors
+        for (NetworkActor actor : actors.values())
+        {
             Packet actorUpdate = new Packet(PacketAction.ADD, actor);
             Logger.debug("Sending actor " + actor.getId() + " -- " + actorUpdate.toString());
             send(id, actorUpdate);
@@ -97,35 +115,43 @@ public class Server extends mayflower.net.Server {
      *
      * @param id the id of the client that disconnected
      */
-    public void onExit(int id) {
+    public void onExit(int id)
+    {
         Logger.info("Client disconnected: ID " + id);
     }
 
-    public Map<Integer, NetworkActor> getActors() {
+    public Map<Integer, NetworkActor> getActors()
+    {
         return actors;
     }
 
-    public NetworkActor getShip() {
+    public NetworkActor getShip()
+    {
         return ship;
     }
 
-    public void setPowerState(PowerData powerState) {
+    public void setPowerState(PowerData powerState)
+    {
         this.powerState = powerState;
     }
 
-    public void setRoleState(RoleData roleState) {
+    public void setRoleState(RoleData roleState)
+    {
         this.roleState = roleState;
     }
 
-    public RoleData getRoleState() {
+    public RoleData getRoleState()
+    {
         return roleState;
     }
 
-    public void send(Packet message) {
+    public void send(Packet message)
+    {
         super.send(message.toString());
     }
 
-    public void send(int id, Packet message) {
+    public void send(int id, Packet message)
+    {
         super.send(id, message.toString());
     }
 }

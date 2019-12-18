@@ -16,16 +16,24 @@ public class Data<K, V> {
         map.put(key, value);
     }
 
-    protected void putAll(Map<K, V> data) {
+    protected void putAll(Map<K, V> data)
+    {
         map.putAll(data);
     }
 
-    protected V get(K key) {
+    protected V get(K key)
+    {
         return map.get(key);
     }
 
+    public Map<K, V> getMap()
+    {
+        return map;
+    }
+
     @Override
-    public String toString() {
+    public String toString()
+    {
         return map.toString();
     }
 }

@@ -1,8 +1,10 @@
 package org.rrhs.asteroids;
 
-public enum Role {
-    ENGINEER,
+public enum Role
+{
+    NONE,
     PILOT,
     WEAPONS,
-    SENSORS
+    SENSORS,
+    ENGINEER
 }

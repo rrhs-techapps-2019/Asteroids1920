@@ -8,11 +8,12 @@ import org.rrhs.asteroids.util.NetworkUtils;
 
 import java.util.Map;
 
-public class CheckoutAction implements ClientAction {
+public class UpdateRolesAction implements ClientAction
+{
     @Override
-    public void act(GameState state, Packet packet) {
-        Map<Role, Boolean> data = NetworkUtils.reconstituteMap(packet.getData(), Role::valueOf, Boolean::valueOf);
-        RoleData roleState = new RoleData(data);
+    public void act(GameState state, Packet packet)
+    {
+        Map<Role, Integer> data = NetworkUtils.reconstituteMap(packet.getData(), Role::valueOf, Integer::parseInt);
+        state.setRoleState(new RoleData(data));
     }
 }
-
